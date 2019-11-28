@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "513852192967",
+    "firebase_url": "https://moneysaver-45f90.firebaseio.com",
+    "project_id": "moneysaver-45f90",
+    "storage_bucket": "moneysaver-45f90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513852192967:android:58a6df558220bceb1526e2",
+        "android_client_info": {
+          "package_name": "com.greatcan.moneysaver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513852192967-1hr6sorejfumndpfn7b7sr8soaqfbp21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.greatcan.moneysaver",
+            "certificate_hash": "8363634a97b2d7038b411317aae9431f4753dabb"
+          }
+        },
+        {
+          "client_id": "513852192967-ltakshbjqbbcp2dpqbqqeqeffbjklc9d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl-7uU0v027Z-9QVvFjIigHenOvAnR8bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513852192967-ltakshbjqbbcp2dpqbqqeqeffbjklc9d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
