@@ -23,6 +23,12 @@
         <activity
             android:name=".AddActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".AnalysisActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".CategoryActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -16,6 +16,7 @@
         android:text="+" />
 
     <RelativeLayout
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
@@ -95,5 +96,36 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="150dp"
+        android:id="@+id/field"
+        android:layout_below="@id/title"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/layout_field"/>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/field"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/layout_numpad"/>
+
+
+    </RelativeLayout>
+
+
+
 
 </RelativeLayout>

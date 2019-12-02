@@ -2,7 +2,9 @@
   <dictionary name="Sebii">
     <words>
       <w>firebase</w>
+      <w>inflator</w>
       <w>multidex</w>
+      <w>numpad</w>
     </words>
   </dictionary>
 </component>

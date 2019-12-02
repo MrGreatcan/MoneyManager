@@ -50,7 +50,12 @@ dependencies {
     implementation "android.arch.lifecycle:viewmodel:1.1.0"
     compile "androidx.core:core-ktx:+"
     compile "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+
+    /* Kotlin */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    /* Circle ImageView */
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
 }
 
