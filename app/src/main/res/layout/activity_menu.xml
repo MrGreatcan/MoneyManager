@@ -9,10 +9,10 @@
     <Button
         android:id="@+id/btnOpenAdd"
         android:layout_width="50dp"
+        android:layout_margin="20dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
         android:text="+" />
 
     <RelativeLayout
@@ -97,35 +97,14 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_marginTop="150dp"
-        android:id="@+id/field"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerListExpense"
         android:layout_below="@id/title"
-        android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content">
-
-        <include
-            layout="@layout/layout_field"/>
-
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_below="@id/field"
-        android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content">
-
-        <include
-            layout="@layout/layout_numpad"/>
-
-
-    </RelativeLayout>
-
-
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:id="@+id/parentLayout"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp">
+
+
+    <RelativeLayout
+        android:id="@+id/relIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded">
+
+        <ImageView
+            android:id="@+id/ivCategoryIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:src="@drawable/icon_baby"
+            android:tint="@color/gray" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/relIcon">
+
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_height="wrap_content"
+            android:text="Food" />
+
+        <TextView
+            android:layout_below="@id/tvCategory"
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:textSize="10sp"
+            android:textColor="@color/lightGray"
+            android:layout_height="wrap_content"
+            android:text="12.10.2019" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_centerVertical="true"
+
+        android:layout_alignParentEnd="true"
+        android:id="@+id/rlAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="28sp"
+            android:layout_height="wrap_content"
+            android:text="$5.40" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

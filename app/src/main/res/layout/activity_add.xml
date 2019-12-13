@@ -1,57 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_margin="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
+  <RelativeLayout
+      android:id="@+id/rlKeyboard"
+      android:layout_marginBottom="50dp"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
 
-        <Spinner
-            android:id="@+id/spinnerType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+      <RelativeLayout
+          android:id="@+id/rlField"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/fieldCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spinnerType"
-            android:text="Category" />
+          <include layout="@layout/layout_field" />
 
-        <EditText
-            android:layout_below="@id/fieldCategory"
-            android:id="@+id/fieldDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date" />
+      </RelativeLayout>
 
-        <EditText
-            android:layout_below="@id/fieldDate"
-            android:id="@+id/fieldAmount"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Amount">
+      <RelativeLayout
+          android:id="@+id/rlNumpad"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/rlField">
 
-        </EditText>
+          <include layout="@layout/layout_numpad" />
 
-        <Button
-            android:layout_below="@+id/fieldAmount"
-            android:layout_centerHorizontal="true"
-            android:text="Add"
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+      </RelativeLayout>
 
-
-    </RelativeLayout>
-
-
+  </RelativeLayout>
 
 </RelativeLayout>

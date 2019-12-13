@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="7dp"
             android:src="@drawable/icon_baby"
-            android:tint="@color/colorGray" />
+            android:tint="@color/gray" />
 
     </RelativeLayout>
 
@@ -32,7 +32,7 @@
         android:inputType="textMultiLine"
         android:text="Sample"
         android:textAlignment="center"
-        android:textColor="@color/colorGray"
+        android:textColor="@color/gray"
         android:textSize="12sp" />
 
 

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@+id/rlNumberField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -13,35 +14,62 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true">
 
+            <RelativeLayout
+                android:id="@+id/rlTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvEnterAmount">
+
+                <TextView
+                    android:id="@+id/tvMoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$ "
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:id="@+id/tvAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/tvMoney"
+                    android:text=""
+                    android:textSize="32sp" />
+
+
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/tvEnterAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Enter the amount" />
-
-            <TextView
-                android:id="@+id/tvAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvEnterAmount"
-                android:text="$ 4234"
-                android:textSize="32sp" />
-
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_centerVertical="true"
+            android:layout_marginRight="-20dp"
             android:id="@+id/rlCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category" />
+            <include
+                layout="@layout/layout_category" />
 
         </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlNumberField">
+
+        <EditText
+            android:id="@+id/fieldNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Note" />
 
     </RelativeLayout>
 

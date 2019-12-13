@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d(TAG, "User was found");
                     } else {
                         Log.d(TAG, "No such document");
-                        createMoneyAccount(user);
+                        //createMoneyAccount(user);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void createMoneyAccount(FirebaseUser user){
-        UserMoneyModel moneyModel = new UserMoneyModel(0, 0, 0);
+        UserMoneyModel moneyModel = new UserMoneyModel(0.0, 0.0, 0.0, 0.0);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = database.collection(MONEY_REFERENCE);

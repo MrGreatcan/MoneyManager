@@ -18,8 +18,8 @@
         android:text="9" />
 
     <Button
-        android:id="@+id/btnRemove"
-        android:text="Remove" />
+        android:id="@+id/btnDate"
+        android:text="Date" />
 
     <Button
         android:onClick="numpadClick"
@@ -53,15 +53,23 @@
         android:text="3" />
 
     <Button
-        android:layout_columnSpan="2"
+        android:layout_columnSpan="1"
         android:layout_gravity="fill"
         android:onClick="numpadClick"
-        android:text="0" />
+        android:text="." />
 
     <Button
         android:layout_columnSpan="1"
         android:layout_gravity="fill"
         android:onClick="numpadClick"
-        android:text="." />
+        android:text="0" />
+
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_columnSpan="1"
+        android:layout_gravity="fill"
+        android:text="Remove" />
+
+
 
 </GridLayout>

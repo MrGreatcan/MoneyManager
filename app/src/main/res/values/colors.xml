@@ -5,8 +5,8 @@
     <color name="colorAccent">#D81B60</color>
 
     <!-- Own colors -->
-    <color name="colorWhite">#FFF</color>
-    <color name="colorLightGray">#BBB</color>
-    <color name="colorGray">#464343</color>
+    <color name="white">#FFF</color>
+    <color name="lightGray">#BBB</color>
+    <color name="gray">#464343</color>
 
 </resources>

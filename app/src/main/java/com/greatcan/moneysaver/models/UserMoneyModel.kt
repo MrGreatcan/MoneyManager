@@ -1,7 +1,8 @@
 package com.greatcan.moneysaver.models
 
 data class UserMoneyModel(
-        var income: Int = 0,
-        var expense: Int = 0,
-        var balance: Int = 0
+        var income: Double = 0.0,
+        var expense: Double = 0.0,
+        var monthBalance: Double = 0.0,
+        var balance: Double = 0.0
 )
