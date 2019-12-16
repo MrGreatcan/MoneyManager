@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,12 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,10 +28,7 @@ import com.greatcan.moneysaver.models.UserMoneyModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-
-import io.grpc.okhttp.internal.Platform;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -56,7 +50,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     private double income;
     private double expense;
     private double balance;
-
+    private double monthBalance = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +60,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        recyclerListExpense = findViewById(R.id.recyclerListExpense);
         fieldIncome = findViewById(R.id.fieldIncome);
         fieldExpense = findViewById(R.id.fieldExpense);
         fieldBalance = findViewById(R.id.fieldBalance);
@@ -76,9 +71,9 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
         newMonth();
 
-        amountOfExpenses = 0;
+        getMonthBalance();
 
-        recyclerListExpense = findViewById(R.id.recyclerListExpense);
+        amountOfExpenses = 0;
 
         final ArrayList<ExpensesModels> listExpenses = new ArrayList<>();
         db.collection("MoneyManager")
@@ -100,12 +95,32 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
                         fieldExpense.setText(String.valueOf(amountOfExpenses));
 
+                        double currentBalance = monthBalance - amountOfExpenses;
+
+                        fieldBalance.setText(String.valueOf(currentBalance));
+
                         recyclerListExpense.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses));
                     }
                 });
 
 
+    }
+
+    private void getMonthBalance() {
+        DocumentReference reference =
+                db.collection("Money")
+                        .document(currentUser.getUid())
+                        .collection("Dates")
+                        .document(getCurrentDate());
+        reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserMoneyModel userMoneyModel = documentSnapshot.toObject(UserMoneyModel.class);
+                Log.d(TAG, "onSuccess: found a date with month balance: " + userMoneyModel.getMonthBalance());
+                monthBalance = userMoneyModel.getMonthBalance();
+            }
+        });
     }
 
     private void newMonth() {
@@ -115,7 +130,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         //If date not exists in database, enter balance, else - none
         //
         String currentDate = getCurrentDate();
-        checkDate(currentDate);
+        hasDateInDatabase(currentDate);
     }
 
     /**
@@ -129,11 +144,15 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         return dateFormat.format(date);
     }
 
-    private void checkDate(final String date) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /**
+     * Does the date exists in database
+     *
+     * @param date
+     */
+    private void hasDateInDatabase(final String date) {
         db.collection("Money")
                 .document(currentUser.getUid())
-                .collection("Date")
+                .collection("Dates")
                 .document(date)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -153,6 +172,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    /**
+     * Save date to database
+     *
+     * @param date
+     */
     private void saveDate(String date) {
         Log.d(TAG, "saveDate: Opening a dialogue with entering a month balance");
         UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, 0.0, 0.0);
@@ -216,6 +240,33 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                             String amount = models.getAmount();
                             Log.d(TAG, "onSuccess: amount: " + amount);
                         }
+                    }
+                });
+    }
+
+    private void getFullList() {
+        final ArrayList<ExpensesModels> listExpenses = new ArrayList<>();
+        db.collection("MoneyManager")
+                .document(currentUser.getUid())
+                .collection("Expense")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            ExpensesModels note = documentSnapshot.toObject(ExpensesModels.class);
+                            note.setId(documentSnapshot.getId());
+                            Log.d(TAG, "onSuccess: data: " + documentSnapshot.getData());
+
+                            amountOfExpenses += Double.valueOf(note.getAmount());
+
+                            listExpenses.add(note);
+                        }
+
+                        fieldExpense.setText(String.valueOf(amountOfExpenses));
+
+                        recyclerListExpense.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses));
                     }
                 });
     }
