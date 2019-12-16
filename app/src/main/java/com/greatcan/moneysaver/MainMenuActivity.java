@@ -30,7 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainMenuActivity extends AppCompatActivity implements
+        MonthBalanceDialog.OnConfirmBalanceListener,
+        View.OnClickListener {
 
     private static final String TAG = "MainMenuActivity";
 
@@ -38,7 +40,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     private TextView fieldIncome;
     private TextView fieldExpense;
     private TextView fieldBalance;
-    private Button btnOpenAdd;
+    private Button btnOpenAdd, btnSignOut;
 
     //Firebase
     private FirebaseFirestore db;
@@ -51,6 +53,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     private double expense;
     private double balance;
     private double monthBalance = 0.0;
+    private boolean isMonthExists = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +68,15 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         fieldExpense = findViewById(R.id.fieldExpense);
         fieldBalance = findViewById(R.id.fieldBalance);
         btnOpenAdd = findViewById(R.id.btnOpenAdd);
+        btnSignOut = findViewById(R.id.btnSignOut);
         btnOpenAdd.setOnClickListener(this);
+        btnSignOut.setOnClickListener(this);
 
         //getUserStatistics();
 
-        newMonth();
+        createNewMonthCollection();
 
-        getMonthBalance();
+        //  getMonthBalance();
 
         amountOfExpenses = 0;
 
@@ -95,9 +100,24 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
                         fieldExpense.setText(String.valueOf(amountOfExpenses));
 
-                        double currentBalance = monthBalance - amountOfExpenses;
+                        DocumentReference reference =
+                                db.collection("Money")
+                                        .document(currentUser.getUid())
+                                        .collection("Dates")
+                                        .document(getCurrentDate());
+                        reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    UserMoneyModel userMoneyModel = documentSnapshot.toObject(UserMoneyModel.class);
 
-                        fieldBalance.setText(String.valueOf(currentBalance));
+                                    Log.d(TAG, "onSuccess: found a date with month balance: " + userMoneyModel.getMonthBalance());
+
+                                    double currentBalance = userMoneyModel.getMonthBalance() - amountOfExpenses;
+                                    fieldBalance.setText(String.valueOf(currentBalance));
+                                }
+                            }
+                        });
 
                         recyclerListExpense.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses));
@@ -107,28 +127,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void getMonthBalance() {
-        DocumentReference reference =
-                db.collection("Money")
-                        .document(currentUser.getUid())
-                        .collection("Dates")
-                        .document(getCurrentDate());
-        reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UserMoneyModel userMoneyModel = documentSnapshot.toObject(UserMoneyModel.class);
-                Log.d(TAG, "onSuccess: found a date with month balance: " + userMoneyModel.getMonthBalance());
-                monthBalance = userMoneyModel.getMonthBalance();
-            }
-        });
-    }
-
-    private void newMonth() {
-        //
-        //Get current date. Example 05.12.2019
-        //Add to database
-        //If date not exists in database, enter balance, else - none
-        //
+    /**
+     * Get current date. Example 05.12.2019
+     * If date not exists in database, enter balance and create add date
+     */
+    private void createNewMonthCollection() {
         String currentDate = getCurrentDate();
         hasDateInDatabase(currentDate);
     }
@@ -161,9 +164,15 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "Date was found");
+                        isMonthExists = true;
                     } else {
+                        isMonthExists = false;
                         Log.d(TAG, "No such document");
-                        saveDate(date);
+                        Log.d(TAG, "Opening a dialogue with entering a month balance");
+                        MonthBalanceDialog monthBalanceDialog = new MonthBalanceDialog(date);
+                        monthBalanceDialog.setCancelable(false);
+                        monthBalanceDialog.show(getSupportFragmentManager(), "Month balance");
+                        //new MonthBalanceDialog(date).show(getSupportFragmentManager(), "Month balance");
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -172,52 +181,38 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    /**
-     * Save date to database
-     *
-     * @param date
-     */
-    private void saveDate(String date) {
-        Log.d(TAG, "saveDate: Opening a dialogue with entering a month balance");
-        UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, 0.0, 0.0);
-        String userUID = currentUser.getUid();
-        db.collection("Money")
-                .document(userUID)
-                .collection("Dates")
-                .document(date)
-                .set(userMoneyModel)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Date was successfully added");
-                    }
-                });
 
-    }
-
-    private void getUserStatistics() {
-        DocumentReference reference = db.collection("Money").document(currentUser.getUid());
-
-        reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UserMoneyModel userMoneyModel = documentSnapshot.toObject(UserMoneyModel.class);
-
-                income = userMoneyModel.getIncome();
-                expense = userMoneyModel.getExpense();
-                balance = userMoneyModel.getBalance();
-
-                Log.d(TAG, "onSuccess: income: " + userMoneyModel.getIncome());
-                Log.d(TAG, "onSuccess: expense: " + userMoneyModel.getExpense());
-                Log.d(TAG, "onSuccess: balance: " + userMoneyModel.getBalance());
-            }
-        });
+    @Override
+    public void onConfirmBalance(double monthBalance, String date) {
+        Log.d(TAG, "onConfirmBalance: month balance equals: " + monthBalance);
+        if (monthBalance != 0) {
+            UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, 0.0, 0.0);
+            String userUID = currentUser.getUid();
+            db.collection("Money")
+                    .document(userUID)
+                    .collection("Dates")
+                    .document(date)
+                    .set(userMoneyModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: Date was successfully added");
+                            isMonthExists = true;
+                        }
+                    });
+        }
     }
 
     @Override
     public void onClick(View view) {
         if (view == btnOpenAdd) {
-            startActivity(new Intent(this, AddActivity.class));
+            hasDateInDatabase(getCurrentDate());
+            if (isMonthExists) {
+                startActivity(new Intent(this, AddActivity.class));
+            } else createNewMonthCollection();
+        }
+        if (view == btnSignOut) {
+            FirebaseAuth.getInstance().signOut();
         }
     }
 
@@ -227,47 +222,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void countAll() {
-        db.collection("MoneyManager")
-                .document(currentUser.getUid())
-                .collection("Income")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot item : queryDocumentSnapshots) {
-                            ExpensesModels models = item.toObject(ExpensesModels.class);
-                            String amount = models.getAmount();
-                            Log.d(TAG, "onSuccess: amount: " + amount);
-                        }
-                    }
-                });
-    }
-
-    private void getFullList() {
-        final ArrayList<ExpensesModels> listExpenses = new ArrayList<>();
-        db.collection("MoneyManager")
-                .document(currentUser.getUid())
-                .collection("Expense")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            ExpensesModels note = documentSnapshot.toObject(ExpensesModels.class);
-                            note.setId(documentSnapshot.getId());
-                            Log.d(TAG, "onSuccess: data: " + documentSnapshot.getData());
-
-                            amountOfExpenses += Double.valueOf(note.getAmount());
-
-                            listExpenses.add(note);
-                        }
-
-                        fieldExpense.setText(String.valueOf(amountOfExpenses));
-
-                        recyclerListExpense.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses));
-                    }
-                });
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

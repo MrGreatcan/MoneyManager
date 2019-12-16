@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             checkUserData(user);
                             startActivity(intent);
+                            finish();
 
                             Log.d(TAG, "onComplete: user email: " + user.getEmail());
                             Log.d(TAG, "onComplete: user display name: " + user.getDisplayName());
