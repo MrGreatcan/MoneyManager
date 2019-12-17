@@ -3,11 +3,12 @@
 
     <color name="colorPrimary">#393939</color>
     <color name="colorAccent">#FF7547</color>
+    <color name="colorDarkAccent">#A3482A</color>
 
     <!-- Own colors -->
     <color name="colorWhite">#FFF</color>
     <color name="colorBlack">#000</color>
-    <color name="colorLightGray">#BBB</color>
+    <color name="colorLightGray">#f6f1ee</color>
     <color name="colorGray">#464343</color>
 
 </resources>

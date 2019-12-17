@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/balance_background"
+    android:paddingLeft="20dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rlExpense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvExpenseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/helvetica_roman"
+            android:text="Expense"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvExpenseText"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/helvetica_bold"
+            android:text="$ 843.39"
+            android:textColor="@color/colorPrimary"
+            android:textSize="32sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlBtnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp">
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_add_background"
+            android:text="+"
+            android:textColor="@color/colorWhite"
+            android:textSize="32sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
