@@ -41,6 +41,8 @@ public class MonthBalanceDialog extends DialogFragment implements View.OnClickLi
         btnConfirm = view.findViewById(R.id.btnConfirm);
         btnConfirm.setOnClickListener(this);
 
+        //Just comment to test
+
         return view;
     }
 
