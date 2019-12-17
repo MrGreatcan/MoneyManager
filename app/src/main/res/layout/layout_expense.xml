@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:src="@drawable/icon_baby"
-            android:tint="@color/gray" />
+            android:tint="@color/colorGray" />
 
     </RelativeLayout>
 
@@ -42,7 +42,7 @@
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:textSize="10sp"
-            android:textColor="@color/lightGray"
+            android:textColor="@color/colorLightGray"
             android:layout_height="wrap_content"
             android:text="12.10.2019" />
 

@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
 
     private Button btnSignInWithGoogle;
+    private ImageView ivCoin;
+    private Animation coinAnimation;
+
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
@@ -54,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         btnSignInWithGoogle = findViewById(R.id.btnSignInWithGoogle);
+        ivCoin = findViewById(R.id.ivCoin);
+        coinAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_coin);
+
+        ivCoin.startAnimation(coinAnimation);
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             startActivity(new Intent(this, MainMenuActivity.class));
