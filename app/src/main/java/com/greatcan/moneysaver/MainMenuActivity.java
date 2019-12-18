@@ -11,10 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,10 +39,10 @@ public class MainMenuActivity extends AppCompatActivity implements
     private static final String TAG = "MainMenuActivity";
 
     //Objects
-    private TextView fieldIncome;
-    private TextView fieldExpense;
-    private TextView fieldBalance;
-    private Button btnOpenAdd, btnSignOut;
+    private ViewPager viewPager;
+    private TextView tvMonthlyBalance, tvCurrentBalance;
+    private TextView tvExpense;
+    private Button btnAdd;
 
     //Firebase
     private FirebaseFirestore db;
@@ -58,28 +60,34 @@ public class MainMenuActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.menu_design);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        recyclerListExpense = findViewById(R.id.recyclerListExpense);
-        fieldIncome = findViewById(R.id.fieldIncome);
-        fieldExpense = findViewById(R.id.fieldExpense);
-        fieldBalance = findViewById(R.id.fieldBalance);
-        btnOpenAdd = findViewById(R.id.btnOpenAdd);
-        btnSignOut = findViewById(R.id.btnSignOut);
-        btnOpenAdd.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
+        viewPager = findViewById(R.id.viewPager);
+        tvMonthlyBalance = findViewById(R.id.tvMonthlyBalance);
+        tvCurrentBalance = findViewById(R.id.tvCurrentBalance);
+        tvExpense = findViewById(R.id.tvExpense);
+        btnAdd = findViewById(R.id.btnAdd);
+
+        btnAdd.setOnClickListener(this);
+
 
         //getUserStatistics();
 
-        createNewMonthCollection();
+         createNewMonthCollection();
 
         //  getMonthBalance();
 
         amountOfExpenses = 0;
 
+        setupViewPager();
+
+        fillMonthlyBalance();
+        tvCurrentBalance.setText("$0");
+
+        /*
         final ArrayList<ExpensesModels> listExpenses = new ArrayList<>();
         db.collection("MoneyManager")
                 .document(currentUser.getUid())
@@ -124,7 +132,38 @@ public class MainMenuActivity extends AppCompatActivity implements
                     }
                 });
 
+         */
+    }
 
+    private void fillMonthlyBalance(){
+        DocumentReference reference =
+                db.collection("Money")
+                        .document(currentUser.getUid())
+                        .collection("Dates")
+                        .document(getCurrentDate());
+        reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    UserMoneyModel userMoneyModel = documentSnapshot.toObject(UserMoneyModel.class);
+
+                    Log.d(TAG, "onSuccess: found a date with month balance: " + userMoneyModel.getMonthlyBalance());
+
+                    tvMonthlyBalance.setText("$" + (int) userMoneyModel.getMonthlyBalance());
+                    //double currentBalance = userMoneyModel.getMonthBalance() - amountOfExpenses;
+                    //fieldBalance.setText(String.valueOf(currentBalance));
+                }
+            }
+        });
+    }
+
+    private void setupViewPager() {
+        Log.d(TAG, "setupViewPager: setup view pager");
+        SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new ExpenseFragment());
+        viewPager.setAdapter(adapter);
+
+        //TabLayout tabLayout =
     }
 
     /**
@@ -183,10 +222,10 @@ public class MainMenuActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onConfirmBalance(double monthBalance, String date) {
-        Log.d(TAG, "onConfirmBalance: month balance equals: " + monthBalance);
-        if (monthBalance != 0) {
-            UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, 0.0, 0.0);
+    public void onConfirmBalance(double monthlyBalance, String date) {
+        Log.d(TAG, "onConfirmBalance: month balance equals: " + monthlyBalance);
+        if (monthlyBalance != 0) {
+            UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, monthlyBalance, 0.0);
             String userUID = currentUser.getUid();
             db.collection("Money")
                     .document(userUID)
@@ -205,14 +244,11 @@ public class MainMenuActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View view) {
-        if (view == btnOpenAdd) {
+        if (view == btnAdd) {
             hasDateInDatabase(getCurrentDate());
             if (isMonthExists) {
                 startActivity(new Intent(this, AddActivity.class));
             } else createNewMonthCollection();
-        }
-        if (view == btnSignOut) {
-            FirebaseAuth.getInstance().signOut();
         }
     }
 

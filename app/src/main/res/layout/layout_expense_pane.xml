@@ -44,6 +44,7 @@
         android:layout_marginRight="30dp">
 
         <Button
+            android:id="@+id/btnAdd"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_add_background"

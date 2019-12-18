@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "513852192967-q5gn6dt4ddmcrddi9dgabsr4cjdavcf3.apps.googleusercontent.com",
+          "client_id": "513852192967-jk0dn19kmulhehtk128atr7q7icgdolf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.greatcan.moneysaver",
-            "certificate_hash": "a589ea2d33dd530e906bfab29886c899c463784e"
-          }
-        },
-        {
-          "client_id": "513852192967-1hr6sorejfumndpfn7b7sr8soaqfbp21.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.greatcan.moneysaver",
-            "certificate_hash": "8363634a97b2d7038b411317aae9431f4753dabb"
+            "certificate_hash": "5380efe9e29566d2232854888d18c05607faf6ae"
           }
         },
         {
