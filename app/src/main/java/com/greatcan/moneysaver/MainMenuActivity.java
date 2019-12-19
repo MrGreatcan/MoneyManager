@@ -1,35 +1,31 @@
 package com.greatcan.moneysaver;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.greatcan.moneysaver.adapters.ExpenseAdapter;
-import com.greatcan.moneysaver.models.ExpensesModels;
 import com.greatcan.moneysaver.models.UserMoneyModel;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MainMenuActivity extends AppCompatActivity implements
@@ -43,6 +39,10 @@ public class MainMenuActivity extends AppCompatActivity implements
     private TextView tvMonthlyBalance, tvCurrentBalance;
     private TextView tvExpense;
     private Button btnAdd;
+    private RelativeLayout rlKeyboard;
+    private RelativeLayout rlSlider;
+    private Animation keyboardAnimationShow;
+    private Animation keyboardAnimationHide;
 
     //Firebase
     private FirebaseFirestore db;
@@ -70,13 +70,17 @@ public class MainMenuActivity extends AppCompatActivity implements
         tvCurrentBalance = findViewById(R.id.tvCurrentBalance);
         tvExpense = findViewById(R.id.tvExpense);
         btnAdd = findViewById(R.id.btnAdd);
+        rlKeyboard = findViewById(R.id.rlKeyboards);
+        rlSlider = findViewById(R.id.rlSlider);
+        keyboardAnimationShow = AnimationUtils.loadAnimation(this, R.anim.anim_keyboard_up);
+        keyboardAnimationHide = AnimationUtils.loadAnimation(this, R.anim.anim_keyboard_down);
 
         btnAdd.setOnClickListener(this);
-
+        rlSlider.setOnClickListener(this);
 
         //getUserStatistics();
 
-         createNewMonthCollection();
+        createNewMonthCollection();
 
         //  getMonthBalance();
 
@@ -135,7 +139,7 @@ public class MainMenuActivity extends AppCompatActivity implements
          */
     }
 
-    private void fillMonthlyBalance(){
+    private void fillMonthlyBalance() {
         DocumentReference reference =
                 db.collection("Money")
                         .document(currentUser.getUid())
@@ -242,13 +246,49 @@ public class MainMenuActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Button click in numpad
+     *
+     * @param view
+     */
+    public void numpadClick(View view) {
+        //Log.d(TAG, "numpadClick: clicked on: " + ((Button) view).getText());
+        //tvAmount.append(((Button) view).getText());
+    }
+
+
     @Override
     public void onClick(View view) {
         if (view == btnAdd) {
             hasDateInDatabase(getCurrentDate());
             if (isMonthExists) {
-                startActivity(new Intent(this, AddActivity.class));
+                // startActivity(new Intent(this, AddActivity.class));
+
+                Log.d(TAG, "onClick: clicked ");
+
+                //if (rlKeyboard.getTranslationY() != 0) {
+                TranslateAnimation animate = new TranslateAnimation(
+                        0,
+                        0,
+                        550,
+                        0);
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                rlKeyboard.startAnimation(animate);
+                //}
+                //rlKeyboard.startAnimation(keyboardAnimationShow);
             } else createNewMonthCollection();
+        }
+        if (view == rlSlider) {
+            Log.d(TAG, "onClick: clicked on rl");
+            TranslateAnimation animate = new TranslateAnimation(
+                    0,
+                    0,
+                    0,
+                    550);
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            rlKeyboard.startAnimation(animate);
         }
     }
 
