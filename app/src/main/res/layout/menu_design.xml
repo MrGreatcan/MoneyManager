@@ -32,9 +32,9 @@
         android:id="@+id/rlViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/rlExpense"
         android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_below="@id/rlExpense">
+        android:layout_marginEnd="25dp">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
@@ -42,6 +42,32 @@
             android:layout_height="wrap_content">
 
         </androidx.viewpager.widget.ViewPager>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlKeyboards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="10dp">
+
+        <RelativeLayout
+            android:layout_centerHorizontal="true"
+            android:id="@+id/rlSlider"
+            android:layout_width="70dp"
+            android:layout_height="3dp"
+            android:background="@color/colorPrimary"/>
+
+        <include
+            android:layout_marginTop="3dp"
+            android:layout_below="@id/rlSlider"
+            layout="@layout/layout_numpad"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
 
 
     </RelativeLayout>

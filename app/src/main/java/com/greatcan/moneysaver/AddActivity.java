@@ -70,7 +70,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         btnDate = findViewById(R.id.btnDate);
         btnOk = findViewById(R.id.btnOk);
         rlCategory = findViewById(R.id.rlCategory);
-        fieldNote = findViewById(R.id.fieldNote);
+        //fieldNote = findViewById(R.id.fieldNote);
         tvAmount = findViewById(R.id.tvAmount);
 
         //Setup click listener

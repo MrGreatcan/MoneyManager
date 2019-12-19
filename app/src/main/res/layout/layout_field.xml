@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
-    android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@color/colorWhite">
 
     <RelativeLayout
         android:id="@+id/rlNumberField"
@@ -9,67 +12,62 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:layout_marginLeft="10dp"
             android:id="@+id/rlField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true">
 
+            <TextView
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/tvEnterAmount"
+                android:layout_width="wrap_content"
+                android:fontFamily="@font/helvetica_roman"
+                android:layout_height="wrap_content"
+                android:text="Enter the amount" />
+
             <RelativeLayout
+                android:layout_marginTop="10dp"
                 android:id="@+id/rlTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvEnterAmount">
 
                 <TextView
+                    android:fontFamily="@font/helvetica_roman"
+                    android:textColor="@color/colorPrimary"
                     android:id="@+id/tvMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/tvAmount"
+                    android:layout_marginBottom="5dp"
                     android:text="$ "
-                    android:textSize="32sp" />
+                    android:textSize="18sp" />
 
                 <TextView
+                    android:fontFamily="@font/helvetica_bold"
+                    android:textColor="@color/colorPrimary"
                     android:id="@+id/tvAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/tvMoney"
-                    android:text=""
+                    android:text="5123"
                     android:textSize="32sp" />
-
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tvEnterAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Enter the amount" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginRight="-20dp"
             android:id="@+id/rlCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true">
 
-            <include
-                layout="@layout/layout_category" />
+            <include layout="@layout/layout_select_category" />
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rlNumberField">
-
-        <EditText
-            android:id="@+id/fieldNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Note" />
 
     </RelativeLayout>
 

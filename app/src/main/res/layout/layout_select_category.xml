@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:fontFamily="@font/helvetica_roman"
+        android:id="@+id/tvTextCategory"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:text="Category"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp" />
+
+    <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/tvTextCategory"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/drawable_category"
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/icon_others"
+            android:tint="@color/colorLightGray" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
