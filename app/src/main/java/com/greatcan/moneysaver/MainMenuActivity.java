@@ -41,8 +41,6 @@ public class MainMenuActivity extends AppCompatActivity implements
     private Button btnAdd;
     private RelativeLayout rlKeyboard;
     private RelativeLayout rlSlider;
-    private Animation keyboardAnimationShow;
-    private Animation keyboardAnimationHide;
 
     //Firebase
     private FirebaseFirestore db;
@@ -72,11 +70,10 @@ public class MainMenuActivity extends AppCompatActivity implements
         btnAdd = findViewById(R.id.btnAdd);
         rlKeyboard = findViewById(R.id.rlKeyboards);
         rlSlider = findViewById(R.id.rlSlider);
-        keyboardAnimationShow = AnimationUtils.loadAnimation(this, R.anim.anim_keyboard_up);
-        keyboardAnimationHide = AnimationUtils.loadAnimation(this, R.anim.anim_keyboard_down);
 
         btnAdd.setOnClickListener(this);
         rlSlider.setOnClickListener(this);
+        viewPager.setOnClickListener(this);
 
         //getUserStatistics();
 
@@ -260,35 +257,21 @@ public class MainMenuActivity extends AppCompatActivity implements
     @Override
     public void onClick(View view) {
         if (view == btnAdd) {
+            rlKeyboard.setVisibility(View.VISIBLE);
+
             hasDateInDatabase(getCurrentDate());
             if (isMonthExists) {
                 // startActivity(new Intent(this, AddActivity.class));
 
-                Log.d(TAG, "onClick: clicked ");
 
-                //if (rlKeyboard.getTranslationY() != 0) {
-                TranslateAnimation animate = new TranslateAnimation(
-                        0,
-                        0,
-                        550,
-                        0);
-                animate.setDuration(500);
-                animate.setFillAfter(true);
-                rlKeyboard.startAnimation(animate);
-                //}
-                //rlKeyboard.startAnimation(keyboardAnimationShow);
             } else createNewMonthCollection();
         }
         if (view == rlSlider) {
-            Log.d(TAG, "onClick: clicked on rl");
-            TranslateAnimation animate = new TranslateAnimation(
-                    0,
-                    0,
-                    0,
-                    550);
-            animate.setDuration(500);
-            animate.setFillAfter(true);
-            rlKeyboard.startAnimation(animate);
+            Log.d(TAG, "onClick: click on slider");
+            rlKeyboard.setVisibility(View.INVISIBLE);
+        }
+        if (view == viewPager){
+            rlKeyboard.setVisibility(View.INVISIBLE);
         }
     }
 
