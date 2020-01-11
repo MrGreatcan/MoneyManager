@@ -57,6 +57,12 @@ dependencies {
     /* Circle ImageView */
     implementation 'de.hdodenhof:circleimageview:3.0.1'
 
+    /* MPAndroid Chart */
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    /* HelloChart */
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+
 }
 
 repositories {

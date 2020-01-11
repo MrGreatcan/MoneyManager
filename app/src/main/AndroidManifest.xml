@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.greatcan.moneysaver">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name="androidx.multidex.MultiDexApplication"
         android:allowBackup="true"
@@ -19,12 +21,6 @@
         </activity>
         <activity
             android:name=".MainMenuActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".AddActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".AnalysisActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 

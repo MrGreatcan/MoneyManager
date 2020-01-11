@@ -1,6 +1,8 @@
-package com.greatcan.moneysaver
+package com.greatcan.moneysaver.configuration
 
-enum class CategoryEnum(val resources: Int) {
+import com.greatcan.moneysaver.R
+
+enum class CategoryEnum(val resource: Int) {
     Bills(R.drawable.icon_bills),
     Food(R.drawable.icon_food),
     Transportation(R.drawable.icon_transportation),

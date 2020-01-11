@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.configuration;
 
 import android.text.InputFilter;
 import android.text.Spanned;

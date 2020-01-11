@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="20dp">
 
-
     <RelativeLayout
         android:id="@+id/relIcon"
         android:layout_width="40dp"
@@ -23,6 +22,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_centerVertical="true"
         android:id="@+id/rlDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,10 +30,10 @@
         android:layout_toRightOf="@id/relIcon">
 
         <TextView
-            android:layout_centerVertical="true"
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
             android:textStyle="bold"
+            android:fontFamily="@font/helvetica_roman"
             android:textSize="16sp"
             android:layout_height="wrap_content"
             android:text="Food" />
@@ -41,9 +41,10 @@
         <TextView
             android:layout_below="@id/tvCategory"
             android:id="@+id/tvDate"
+            android:fontFamily="@font/helvetica_roman"
             android:layout_width="wrap_content"
             android:textSize="10sp"
-            android:textColor="@color/colorLightGray"
+            android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:text="12.10.2019" />
 
@@ -51,7 +52,6 @@
 
     <RelativeLayout
         android:layout_centerVertical="true"
-
         android:layout_alignParentEnd="true"
         android:id="@+id/rlAmount"
         android:layout_width="wrap_content"
@@ -60,12 +60,12 @@
 
         <TextView
             android:id="@+id/tvAmount"
+            android:fontFamily="@font/helvetica_bold"
             android:layout_width="wrap_content"
             android:textStyle="bold"
             android:textSize="28sp"
             android:layout_height="wrap_content"
             android:text="$5.40" />
-
 
     </RelativeLayout>
 

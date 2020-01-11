@@ -60,7 +60,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="50dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/drawable_default_btn"
             android:fontFamily="@font/helvetica_thin"
             android:text="Sign in with Google"
             android:textAllCaps="false"

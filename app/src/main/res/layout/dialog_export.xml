@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorLightGray"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvExportFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/helvetica_bold"
+            android:text="Export from"
+            android:textSize="24sp" />
+
+        <!-- Find by date-->
+        <RelativeLayout
+            android:id="@+id/rlFindByDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvExportFrom"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp">
+
+            <!-- Field start date-->
+            <RelativeLayout
+                android:id="@+id/rlStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/fieldStartDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/drawable_field"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:fontFamily="@font/helvetica_roman"
+                    android:inputType="none"
+                    android:text="Start date"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <!-- Field end date -->
+            <RelativeLayout
+                android:id="@+id/rlEndDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/rlStartDate">
+
+                <EditText
+                    android:id="@+id/fieldEndDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/drawable_field"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:fontFamily="@font/helvetica_roman"
+                    android:inputType="none"
+                    android:text="End date"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlFindByDate"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp">
+
+            <TextView
+                android:id="@+id/tvCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/helvetica_roman"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:text="Cancel"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tvCancel"
+                android:background="@drawable/drawable_default_btn"
+                android:fontFamily="@font/helvetica_roman"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:text="OK"
+                android:textColor="@color/colorLightGray" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

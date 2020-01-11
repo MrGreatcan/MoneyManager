@@ -8,18 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.greatcan.moneysaver.R
-import com.greatcan.moneysaver.models.CategoryModels
+import com.greatcan.moneysaver.interfaces.OnCategoryCallback
+import com.greatcan.moneysaver.models.CategoryModel
 import kotlinx.android.synthetic.main.layout_category.view.*
 
 class CategoryAdapter(
-        var categoryList: ArrayList<CategoryModels>,
+        var categoryList: ArrayList<CategoryModel>,
         var context: Context,
-        var callback: CategoryCallback
+        var callbackOn: OnCategoryCallback
 ) : BaseAdapter() {
-
-    interface CategoryCallback {
-        fun onItemClicked(text: String, icon: Int)
-    }
 
     private val TAG: String = "CategoryAdapter"
 
@@ -45,18 +42,10 @@ class CategoryAdapter(
         view.parentLayout.setOnClickListener {
             Log.d(TAG, "getView: clicked on ${category.name_of_category}")
 
-//            val intent = Intent(context, AddActivity::class.java)
-//            intent.putExtra(IntentExtras.CATEGORY_KEY, category.name_of_category)
-//            context.startActivity(intent)
-
-            if (callback != null){
-                callback.onItemClicked(text = category.name_of_category, icon = category.icon_of_category)
+            if (callbackOn != null){
+                callbackOn.onItemClicked(text = category.name_of_category, icon = category.icon_of_category)
             }
-
         }
-
         return view
     }
-
-
 }
