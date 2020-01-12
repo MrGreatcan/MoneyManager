@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.dialogs.ConfirmSignOutDialog;
 import com.greatcan.moneysaver.dialogs.ExportDialog;
 
 import java.util.ArrayList;
@@ -50,18 +52,16 @@ public class SettingsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: navigation to fragment #: " + position);
                 if (position == 0) {
-                    Log.d(TAG, "onItemClick: Export data: ");
+                    Log.d(TAG, "onItemClick: Export date: ");
                     ExportDialog exportDialog = new ExportDialog();
                     exportDialog.show(getActivity().getSupportFragmentManager(), "Export dialog");
                 }
                 if (position == 1){
                     Log.d(TAG, "onItemClick: Sign out");
-                    FirebaseAuth.getInstance().signOut();
+                    ConfirmSignOutDialog confirmSignOutDialog = new ConfirmSignOutDialog();
+                    confirmSignOutDialog.show(getActivity().getSupportFragmentManager(), "Sign out dialog");
                 }
             }
         });
-
     }
-
-
 }

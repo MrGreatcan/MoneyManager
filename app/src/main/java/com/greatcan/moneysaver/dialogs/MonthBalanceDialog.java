@@ -116,7 +116,7 @@ public class MonthBalanceDialog extends DialogFragment implements View.OnClickLi
                 double balance = Double.parseDouble(tvAmount.getText().toString());
 
                 onConfirmBalanceListener.onConfirmBalance(balance, date);
-                getDialog().dismiss();
+                dismiss();
 
                 Log.d(TAG, "onClick: balance: " + balance);
 

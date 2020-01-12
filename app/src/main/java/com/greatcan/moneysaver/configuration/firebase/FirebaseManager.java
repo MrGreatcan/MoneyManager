@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.configuration.firebase;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.greatcan.moneysaver.configuration.CurrentDate;
+import com.greatcan.moneysaver.configuration.date.CurrentDate;
 import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.ReceiverAction;
 import com.greatcan.moneysaver.models.UserMoneyModel;
@@ -49,9 +49,9 @@ public class FirebaseManager {
         db = FirebaseFirestore.getInstance();
         String currentMonth = CurrentDate.getCurrentDate();
         DocumentReference reference =
-                db.collection("Money")
+                db.collection(FirebaseReferences.USER.getReferences())
                         .document(currentUser.getUid())
-                        .collection("Dates")
+                        .collection(FirebaseReferences.DATE.getReferences())
                         .document(currentMonth);
         reference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @SuppressLint("SetTextI18n")

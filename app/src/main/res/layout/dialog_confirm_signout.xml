@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLightGray"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/helvetica_roman"
+        android:hint="Are you sure you want to sign out?"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDialogTitle"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp">
+
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/helvetica_roman"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="Cancel"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tvCancel"
+            android:background="@drawable/drawable_default_btn"
+            android:fontFamily="@font/helvetica_roman"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="Confirm"
+            android:textColor="@color/colorLightGray" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +44,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
+import com.greatcan.moneysaver.R;
 import com.greatcan.moneysaver.adapters.ColorAdapter;
 import com.greatcan.moneysaver.adapters.ExpenseAdapter;
-import com.greatcan.moneysaver.configuration.DateRange;
-import com.greatcan.moneysaver.configuration.FirebaseReferences;
+import com.greatcan.moneysaver.configuration.date.DateRange;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.ReceiverAction;
+import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.models.ColorModel;
 import com.greatcan.moneysaver.models.FinanceModel;
 
@@ -55,6 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -71,6 +80,8 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     private Button btnSearch;
     private RecyclerView recyclerListExpense, recyclerChartDescription;
     private PieChart pieChart;
+    private LinearLayout llChartView;
+    private RelativeLayout rlList, rlTextMonthlyBalance, rlNothingFound;
 
     //Firebase
     private FirebaseFirestore db;
@@ -114,6 +125,14 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         recyclerChartDescription = v.findViewById(R.id.recyclerChartDescription);
         pieChart = v.findViewById(R.id.pieChart);
 
+        /* Layouts */
+        llChartView = v.findViewById(R.id.llChartView);
+        rlList = v.findViewById(R.id.rlList);
+        rlTextMonthlyBalance = v.findViewById(R.id.rlTextMonthlyBalance);
+        rlNothingFound = v.findViewById(R.id.rlNothingFound);
+        rlTextMonthlyBalance.setVisibility(View.GONE);
+        rlNothingFound.setVisibility(View.GONE);
+
         fieldStartDate = v.findViewById(R.id.fieldStartDate);
         fieldEndDate = v.findViewById(R.id.fieldEndDate);
         btnSearch = v.findViewById(R.id.btnSearch);
@@ -151,7 +170,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Responsible for receiving data from FirebaseManager.class
+     * Responsible for receiving date from FirebaseManager.class
      */
     private BroadcastReceiver mServiceReceiver = new BroadcastReceiver() {
         @Override
@@ -174,9 +193,10 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     private void getAllExpense(final Date sStartDate, final Date sEndDate) {
         amountOfExpenses = 0.0;
         tempExpense = 0.0d;
+
         final ArrayList<FinanceModel> listExpenses = new ArrayList<>();
         final ArrayList<String> listCategories = new ArrayList<>();
-        db.collection("MoneyManager")
+        db.collection(FirebaseReferences.MONEY.getReferences())
                 .document(currentUser.getUid())
                 .collection(FirebaseReferences.STATS.getReferences())
                 .get()
@@ -186,13 +206,12 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             FinanceModel model = documentSnapshot.toObject(FinanceModel.class);
-                            model.setId(documentSnapshot.getId());
-                            //Log.d(TAG, "onSuccess: data: " + documentSnapshot.getData());
+                            //Log.d(TAG, "onSuccess: date: " + documentSnapshot.getDate());
 
                             try {
                                 Date dateStart = sdf.parse(sdf.format(sStartDate));
                                 Date dateEnd = sdf.parse(sdf.format(sEndDate));
-                                Date target = sdf.parse(model.getData());
+                                Date target = sdf.parse(model.getDate());
 
                                 if (DateRange.isDateRange(dateStart, dateEnd, target)) {
                                     tempExpense += Double.valueOf(model.getAmount());
@@ -219,9 +238,67 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
 
                         tempExpense = 0.0d;
 
+                        if (listExpenses.size() == 0) {
+                            llChartView.setVisibility(View.GONE);
+                            rlList.setVisibility(View.GONE);
+                            rlNothingFound.setVisibility(View.VISIBLE);
+                        } else {
+                            llChartView.setVisibility(View.VISIBLE);
+                            rlNothingFound.setVisibility(View.GONE);
+                            rlList.setVisibility(View.VISIBLE);
+                        }
+
                         /* Add to list View*/
                         recyclerListExpense.setLayoutManager(new LinearLayoutManager(getActivity()));
                         recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses, getActivity()));
+
+                        Collections.sort(listExpenses, new Comparator<FinanceModel>() {
+                            /**
+                             * Compares its two arguments for order.  Returns a negative integer,
+                             * zero, or a positive integer as the first argument is less than, equal
+                             * to, or greater than the second.<p>
+                             * <p>
+                             * In the foregoing description, the notation
+                             * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
+                             * <i>signum</i> function, which is defined to return one of <tt>-1</tt>,
+                             * <tt>0</tt>, or <tt>1</tt> according to whether the value of
+                             * <i>expression</i> is negative, zero or positive.<p>
+                             * <p>
+                             * The implementor must ensure that <tt>sgn(compare(x, y)) ==
+                             * -sgn(compare(y, x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
+                             * implies that <tt>compare(x, y)</tt> must throw an exception if and only
+                             * if <tt>compare(y, x)</tt> throws an exception.)<p>
+                             * <p>
+                             * The implementor must also ensure that the relation is transitive:
+                             * <tt>((compare(x, y)&gt;0) &amp;&amp; (compare(y, z)&gt;0))</tt> implies
+                             * <tt>compare(x, z)&gt;0</tt>.<p>
+                             * <p>
+                             * Finally, the implementor must ensure that <tt>compare(x, y)==0</tt>
+                             * implies that <tt>sgn(compare(x, z))==sgn(compare(y, z))</tt> for all
+                             * <tt>z</tt>.<p>
+                             * <p>
+                             * It is generally the case, but <i>not</i> strictly required that
+                             * <tt>(compare(x, y)==0) == (x.equals(y))</tt>.  Generally speaking,
+                             * any comparator that violates this condition should clearly indicate
+                             * this fact.  The recommended language is "Note: this comparator
+                             * imposes orderings that are inconsistent with equals."
+                             *
+                             * @param o1 the first object to be compared.
+                             * @param o2 the second object to be compared.
+                             * @return a negative integer, zero, or a positive integer as the
+                             * first argument is less than, equal to, or greater than the
+                             * second.
+                             * @throws NullPointerException if an argument is null and this
+                             *                              comparator does not permit null arguments
+                             * @throws ClassCastException   if the arguments' types prevent them from
+                             *                              being compared by this comparator.
+                             */
+                            @Override
+                            public int compare(FinanceModel o1, FinanceModel o2) {
+                                return  o2.getDate().compareTo(o1.getDate());
+                            }
+                        });
+
                         fillPieChart(listCategories);
                     }
                 })
@@ -237,7 +314,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     /**
      * Filling PieChart
      * Add click listener to PieChart.
-     * Adding data to RecyclerView with color of a specific slice
+     * Adding date to RecyclerView with color of a specific slice
      *
      * @param listCategories receive list with certain categories and count the duplicate values
      */
@@ -260,7 +337,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        /* List with data for PieChart */
+        /* List with date for PieChart */
         final ArrayList<PieEntry> aListPieEntry = new ArrayList<>();
         ArrayList<Integer> pieColors = new ArrayList<>();
 
@@ -278,7 +355,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             aListPieEntry.add(new PieEntry((float) percent, entry.getKey()));
 
             /* Add to list with colors */
-            listColors.add(new ColorModel(color, String.format("%s (%s)", entry.getKey(), percent + "%")));
+            listColors.add(new ColorModel(color, String.format("%s (%s)", entry.getKey(),  (double) Math.round(percent * 100) / 100 + "%")));
 
             /* Add color to PieChat */
             pieColors.add(color);
@@ -290,7 +367,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         pieDataSet.setSliceSpace(3f);
         pieDataSet.setSelectionShift(5f);
 
-        /* PieChart data management */
+        /* PieChart date management */
         final PieData pieData = new PieData(pieDataSet);
         pieData.setValueTextSize(0f);
 
@@ -309,14 +386,13 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        /* Add data to PieChart */
+        /* Add date to PieChart */
         pieChart.setData(pieData);
         pieChart.invalidate();
 
         /* Add qColors to list View*/
         recyclerChartDescription.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerChartDescription.setAdapter(new ColorAdapter(listColors));
-
     }
 
     /**
@@ -337,26 +413,13 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             String endDate = fieldEndDate.getText().toString().trim();
 
             try {
-                getAllExpense(sdf.parse(startDate), sdf.parse(endDate));
+                if (InternetStatus.getConnectivityStatus(getActivity())) {
+                    getAllExpense(sdf.parse(startDate), sdf.parse(endDate));
+                } else Toast.makeText(getActivity(), "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        //if (view == btnCurrentMonth){
-        //    Calendar calendarStart = Calendar.getInstance();
-        //    Calendar calendarEnd = Calendar.getInstance();
-        //    calendarStart.set(Calendar.DAY_OF_MONTH, 1);
-        //    calendarEnd.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
-        //
-        //    fieldStartDate.setText(sdf.format(calendarStart.getTime()));
-        //    fieldEndDate.setText(sdf.format(calendarEnd.getTime()));
-        //
-        //    try {
-        //        getAllExpense(sdf.parse(fieldStartDate.getText().toString().trim()), sdf.parse(fieldEndDate.getText().toString().trim()));
-        //    } catch (ParseException e) {
-        //        e.printStackTrace();
-        //    }
-        //}
         if (view == fieldStartDate) {
             final Calendar calendar = Calendar.getInstance();
             final int day = calendar.get(Calendar.DAY_OF_MONTH);

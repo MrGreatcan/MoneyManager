@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver.configuration;
+package com.greatcan.moneysaver.configuration.date;
 
 import java.util.Date;
 

@@ -66,7 +66,8 @@ public class ConfirmAddingDialog extends DialogFragment implements View.OnClickL
             Log.d(TAG, "onClick: captured password and confirming.");
 
             String note = fieldNote.getText().toString().trim();
-            financeModel.setNote(!note.equals("") ? note : financeModel.getCategory());
+            //financeModel.setNote(!note.equals("") ? note : financeModel.getCategory());
+            financeModel.setNote(note);
 
             Log.d(TAG, "onClick: amount: " + financeModel.getAmount());
 

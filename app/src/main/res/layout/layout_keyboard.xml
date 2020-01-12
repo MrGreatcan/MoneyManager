@@ -14,7 +14,7 @@
 
         <fragment
             android:id="@+id/keyboardFragment"
-            android:name="com.greatcan.moneysaver.KeyboardFragment"
+            android:name="com.greatcan.moneysaver.fragments.KeyboardFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

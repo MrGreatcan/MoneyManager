@@ -1,9 +1,13 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -36,8 +41,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
+import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.models.UserModel;
-import com.greatcan.moneysaver.models.UserMoneyModel;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -52,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
 
-    private final String USERS_REFERENCE = "Users";
-    private final String MONEY_REFERENCE = "Money";
+    private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         coinAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_coin);
 
         ivCoin.startAnimation(coinAnimation);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Request for permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+        }
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             startActivity(new Intent(this, MainMenuActivity.class));
@@ -90,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkUserData(final FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Users").document(user.getUid());
+        DocumentReference docRef = db.collection(FirebaseReferences.USER.getReferences()).document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -114,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkUserMoney(final FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Users").document(user.getUid());
+        DocumentReference docRef = db.collection(FirebaseReferences.USER.getReferences()).document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -135,13 +150,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void saveToDatabase(UserModel userModel) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = database.collection(USERS_REFERENCE);
+        CollectionReference collectionReference = database.collection(FirebaseReferences.USER.getReferences());
         collectionReference.document(userModel.getUser_uid())
                 .set(userModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: data was saved");
+                        Log.d(TAG, "onSuccess: date was saved");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -209,16 +224,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btnSignInWithGoogle) {
+            if (InternetStatus.getConnectivityStatus(this)){
 
-            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                        }
-                    });
+                Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                            }
+                        });
 
-            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

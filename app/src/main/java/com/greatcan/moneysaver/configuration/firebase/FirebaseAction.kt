@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver
+package com.greatcan.moneysaver.configuration.firebase
 
 enum class FirebaseAction {
     MENU_MONTHLY_BALANCE,

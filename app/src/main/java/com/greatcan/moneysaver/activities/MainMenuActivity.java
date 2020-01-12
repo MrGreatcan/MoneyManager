@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.activities;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -30,9 +32,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.greatcan.moneysaver.configuration.network.InternetStatus;
+import com.greatcan.moneysaver.fragments.AnalysisFragment;
+import com.greatcan.moneysaver.fragments.ExpenseFragment;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
+import com.greatcan.moneysaver.fragments.KeyboardFragment;
+import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.fragments.SettingsFragment;
 import com.greatcan.moneysaver.adapters.SectionPagerAdapter;
-import com.greatcan.moneysaver.configuration.CurrentDate;
-import com.greatcan.moneysaver.configuration.FirebaseReferences;
+import com.greatcan.moneysaver.configuration.date.CurrentDate;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.ReceiverAction;
 import com.greatcan.moneysaver.dialogs.ConfirmAddingDialog;
@@ -58,6 +68,7 @@ public class MainMenuActivity extends AppCompatActivity implements
     private TextView tvMonthlyBalance, tvCurrentBalance;
     private TextView tvExpense;
     private Button btnAdd;
+    private ProgressBar progressBar;
 
     //Firebase
     private FirebaseFirestore db;
@@ -69,6 +80,7 @@ public class MainMenuActivity extends AppCompatActivity implements
     private double tempExpense;
 
     private BottomSheetBehavior bottomSheetBehavior;
+
     public BottomSheetBehavior getBottomSheetBehavior() {
         return bottomSheetBehavior;
     }
@@ -81,6 +93,7 @@ public class MainMenuActivity extends AppCompatActivity implements
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        progressBar = findViewById(R.id.progressBar);
         viewPager = findViewById(R.id.viewPager);
         tvMonthlyBalance = findViewById(R.id.tvMonthlyBalance);
         tvCurrentBalance = findViewById(R.id.tvCurrentBalance);
@@ -110,6 +123,7 @@ public class MainMenuActivity extends AppCompatActivity implements
 
         amountOfExpenses = 0.0d;
         tvCurrentBalance.setText("$0");
+        progressBar.setVisibility(View.GONE);
 
         firebaseManager = new FirebaseManager(this);
 
@@ -121,7 +135,7 @@ public class MainMenuActivity extends AppCompatActivity implements
     }
 
     /**
-     * Responsible for receiving data from FirebaseManager.class
+     * Responsible for receiving date from FirebaseManager.class
      */
     private BroadcastReceiver mServiceReceiver = new BroadcastReceiver() {
         @Override
@@ -142,9 +156,11 @@ public class MainMenuActivity extends AppCompatActivity implements
      * Get expense
      */
     private void getAllExpense() {
+        progressBar.setVisibility(View.VISIBLE);
+
         amountOfExpenses = 0.0d;
         tempExpense = 0.0d;
-        db.collection("MoneyManager")
+        db.collection(FirebaseReferences.MONEY.getReferences())
                 .document(currentUser.getUid())
                 .collection(FirebaseReferences.STATS.getReferences())
                 .get()
@@ -154,12 +170,11 @@ public class MainMenuActivity extends AppCompatActivity implements
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             FinanceModel model = documentSnapshot.toObject(FinanceModel.class);
-                            model.setId(documentSnapshot.getId());
-                            Log.d(TAG, "onSuccess: data: " + documentSnapshot.getData());
+                            Log.d(TAG, "onSuccess: date: " + documentSnapshot.getData());
 
                             try {
                                 @SuppressLint("SimpleDateFormat")
-                                Date modelDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.getData());
+                                Date modelDate = new SimpleDateFormat("dd-MM-yyyy").parse(model.getDate());
                                 LocalDate localModelDate = modelDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
                                 @SuppressLint("SimpleDateFormat")
@@ -182,6 +197,7 @@ public class MainMenuActivity extends AppCompatActivity implements
                         //tvExpense.setText(amountOfExpenses <= monthBalance ? "$ " + amountOfExpenses : "- $ " + amountOfExpenses);
                         tvExpense.setText("$ " + amountOfExpenses);
                         tempExpense = 0.0d;
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
     }
@@ -217,9 +233,9 @@ public class MainMenuActivity extends AppCompatActivity implements
      * @param date
      */
     private void hasDateInDatabase(final String date) {
-        db.collection("Money")
+        db.collection(FirebaseReferences.USER.getReferences())
                 .document(currentUser.getUid())
-                .collection("Dates")
+                .collection(FirebaseReferences.DATE.getReferences())
                 .document(date)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -230,7 +246,7 @@ public class MainMenuActivity extends AppCompatActivity implements
                         Log.d(TAG, "Date was found");
                     } else {
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        tvMonthlyBalance.setText("$0");
+                        tvMonthlyBalance.setText("0");
 
                         Log.d(TAG, "No such document");
                         Log.d(TAG, "Opening a dialogue with entering a month balance");
@@ -265,47 +281,59 @@ public class MainMenuActivity extends AppCompatActivity implements
     @Override
     public void onConfirmBalance(double monthlyBalance, String date) {
         Log.d(TAG, "onConfirmBalance: month balance equals: " + monthlyBalance);
-        if (monthlyBalance != 0) {
-            UserMoneyModel userMoneyModel = new UserMoneyModel(0.0, 0.0, monthlyBalance, 0.0);
-            String userUID = currentUser.getUid();
-            db.collection("Money")
-                    .document(userUID)
-                    .collection("Dates")
-                    .document(date)
-                    .set(userMoneyModel)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "onSuccess: Date was successfully added");
-                            //firebaseManager.fillMonthlyBalance();
-                        }
-                    });
-        }
+        if (InternetStatus.getConnectivityStatus(this)) {
+            progressBar.setVisibility(View.VISIBLE);
+
+            if (monthlyBalance != 0) {
+                UserMoneyModel userMoneyModel = new UserMoneyModel(monthlyBalance);
+
+                String userUID = currentUser.getUid();
+                db.collection(FirebaseReferences.USER.getReferences())
+                        .document(userUID)
+                        .collection(FirebaseReferences.DATE.getReferences())
+                        .document(date)
+                        .set(userMoneyModel)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "onSuccess: Date was successfully added");
+                                firebaseManager.firebaseMenu(FirebaseAction.MENU_MONTHLY_BALANCE);
+                                progressBar.setVisibility(View.GONE);
+
+                            }
+                        });
+            }
+        } else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConfirmAdding(FinanceModel model) {
-        if (model != null) {
-            String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            db.collection("MoneyManager")
-                    .document(userUID)
-                    .collection(FirebaseReferences.STATS.getReferences())
-                    .add(model)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                            setupViewPager();
-                           // firebaseManager.fillMonthlyBalance();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                        }
-                    });
-        }
+        if (InternetStatus.getConnectivityStatus(this)) {
+            if (model != null) {
+                progressBar.setVisibility(View.VISIBLE);
+
+                String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                db.collection(FirebaseReferences.MONEY.getReferences())
+                        .document(userUID)
+                        .collection(FirebaseReferences.STATS.getReferences())
+                        .add(model)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                                setupViewPager();
+                                firebaseManager.firebaseMenu(FirebaseAction.MENU_MONTHLY_BALANCE);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
+            }
+        } else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
     }
 
     @Override

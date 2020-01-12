@@ -1,7 +1,5 @@
 package com.greatcan.moneysaver.adapters
 
-import android.app.PendingIntent.getActivity
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.greatcan.moneysaver.MainMenuActivity
 import com.greatcan.moneysaver.R
 import com.greatcan.moneysaver.configuration.CategoryEnum
-import com.greatcan.moneysaver.dialogs.ConfirmAddingDialog
 import com.greatcan.moneysaver.dialogs.ViewExpenseDialog
 import com.greatcan.moneysaver.models.FinanceModel
 
@@ -41,7 +34,7 @@ class ExpenseAdapter(
         Log.d(TAG, "onBindViewHolder: starting ")
         holder.ivCategoryIcon.setImageResource(getIcon(model.category))
         holder.tvCategory.text = model.category
-        holder.tvDate.text = model.data
+        holder.tvDate.text = model.date
         holder.tvAmount.text = "- $" + model.amount
 
         holder.parentLayout.setOnClickListener {

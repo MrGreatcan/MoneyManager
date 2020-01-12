@@ -1,4 +1,4 @@
-package com.greatcan.moneysaver;
+package com.greatcan.moneysaver.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -25,6 +25,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.activities.MainMenuActivity;
 import com.greatcan.moneysaver.adapters.CategoryAdapter;
 import com.greatcan.moneysaver.configuration.CategoryEnum;
 import com.greatcan.moneysaver.configuration.DecimalDigitsInputFilter;
@@ -137,7 +139,7 @@ public class KeyboardFragment extends Fragment implements
     }
 
     /**
-     * When the category was selected, get data from the adapter
+     * When the category was selected, get date from the adapter
      *
      * @param text
      * @param icon
@@ -202,14 +204,13 @@ public class KeyboardFragment extends Fragment implements
             }
         }
         if (view == btnOk) {
-            String type = "Expense";
             String category = tvTextCategory.getText().toString().trim();
             String date = selectedDate;
             String amount = tvAmount.getText().toString().trim();
 
             if (!amount.isEmpty() && !date.equals("")) {
                 ((MainMenuActivity) getActivity()).getBottomSheetBehavior().setState(BottomSheetBehavior.STATE_HIDDEN);
-                ConfirmAddingDialog confirmAddingDialog = new ConfirmAddingDialog(new FinanceModel("", type, category, date, amount, ""));
+                ConfirmAddingDialog confirmAddingDialog = new ConfirmAddingDialog(new FinanceModel(category, date, amount, ""));
                 confirmAddingDialog.show(getActivity().getSupportFragmentManager(), "Confirm adding");
 
                 tvAmount.setText("");
