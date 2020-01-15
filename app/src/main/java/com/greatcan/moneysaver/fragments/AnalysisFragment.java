@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,21 +40,24 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
 import com.greatcan.moneysaver.R;
 import com.greatcan.moneysaver.adapters.ColorAdapter;
 import com.greatcan.moneysaver.adapters.ExpenseAdapter;
-import com.greatcan.moneysaver.configuration.date.DateRange;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
+import com.greatcan.moneysaver.configuration.CategoryEnum;
 import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.ReceiverAction;
+import com.greatcan.moneysaver.configuration.date.DateRange;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.models.ColorModel;
 import com.greatcan.moneysaver.models.FinanceModel;
+import com.greatcan.moneysaver.models.UserModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -75,13 +77,13 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "AnalysisFragment";
 
     //Objects
-    private TextView tvMonthlyBalance, tvExpense, tvBalance;
+    private TextView tvExpense, tvBalance, tvExpenseCurrency, tvBalanceCurrency;
     private EditText fieldStartDate, fieldEndDate;
     private Button btnSearch;
     private RecyclerView recyclerListExpense, recyclerChartDescription;
     private PieChart pieChart;
     private LinearLayout llChartView;
-    private RelativeLayout rlList, rlTextMonthlyBalance, rlNothingFound;
+    private RelativeLayout rlList, rlNothingFound;
 
     //Firebase
     private FirebaseFirestore db;
@@ -118,19 +120,20 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("SimpleDateFormat")
     private void initObjects(View v) {
         Log.d(TAG, "initObjects: start initialize objects");
-        tvMonthlyBalance = v.findViewById(R.id.tvMonthlyBalance);
         tvExpense = v.findViewById(R.id.tvExpense);
         tvBalance = v.findViewById(R.id.tvBalance);
         recyclerListExpense = v.findViewById(R.id.recyclerListExpense);
         recyclerChartDescription = v.findViewById(R.id.recyclerChartDescription);
         pieChart = v.findViewById(R.id.pieChart);
 
+        /* Currency */
+        tvExpenseCurrency = v.findViewById(R.id.tvExpenseCurrency);
+        tvBalanceCurrency = v.findViewById(R.id.tvBalanceCurrency);
+
         /* Layouts */
         llChartView = v.findViewById(R.id.llChartView);
         rlList = v.findViewById(R.id.rlList);
-        rlTextMonthlyBalance = v.findViewById(R.id.rlTextMonthlyBalance);
         rlNothingFound = v.findViewById(R.id.rlNothingFound);
-        rlTextMonthlyBalance.setVisibility(View.GONE);
         rlNothingFound.setVisibility(View.GONE);
 
         fieldStartDate = v.findViewById(R.id.fieldStartDate);
@@ -150,9 +153,8 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         firebaseManager = new FirebaseManager(getActivity());
 
-        tvMonthlyBalance.setText("$0");
-        tvBalance.setText("$0");
-        tvExpense.setText("$0");
+        tvBalance.setText("0");
+        tvExpense.setText("0");
 
         firebaseManager.firebaseMenu(FirebaseAction.STATS_MONTHLY_BALANCE);
         Calendar calendarStart = Calendar.getInstance();
@@ -183,12 +185,32 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
 
                 try {
                     getAllExpense(sdf.parse(fieldStartDate.getText().toString().trim()), sdf.parse(fieldEndDate.getText().toString().trim()));
+                    getUserCurrency();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
         }
     };
+
+    /**
+     * Receiving user currency from database
+     */
+    private void getUserCurrency(){
+        db.collection(FirebaseReferences.USER.getReferences())
+                .document(currentUser.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()){
+                            UserModel model = documentSnapshot.toObject(UserModel.class);
+                            tvExpenseCurrency.setText(model.getCurrency());
+                            tvBalanceCurrency.setText(model.getCurrency());
+                        }
+                    }
+                });
+    }
 
     private void getAllExpense(final Date sStartDate, final Date sEndDate) {
         amountOfExpenses = 0.0;
@@ -227,14 +249,13 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
                         }
                         amountOfExpenses = tempExpense;
                         /* Fill monthly balance*/
-                        tvMonthlyBalance.setText("$" + monthlyBalance);
 
                         /* Fill expense */
-                        tvExpense.setText("$" + amountOfExpenses);
+                        tvExpense.setText(String.valueOf(amountOfExpenses));
 
                         /* Fill balance*/
                         double balance = monthlyBalance - amountOfExpenses;
-                        tvBalance.setText("$" + balance);
+                        tvBalance.setText(String.valueOf((double) Math.round(balance * 100) / 100));
 
                         tempExpense = 0.0d;
 
@@ -250,7 +271,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
 
                         /* Add to list View*/
                         recyclerListExpense.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses, getActivity()));
+                        recyclerListExpense.setAdapter(new ExpenseAdapter(getActivity(), listExpenses, getActivity()));
 
                         Collections.sort(listExpenses, new Comparator<FinanceModel>() {
                             /**
@@ -295,11 +316,12 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
                              */
                             @Override
                             public int compare(FinanceModel o1, FinanceModel o2) {
-                                return  o2.getDate().compareTo(o1.getDate());
+                                return o2.getDate().compareTo(o1.getDate());
                             }
                         });
 
-                        fillPieChart(listCategories);
+                        //fillPieChart(listCategories);
+                        testPieChart(listExpenses);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -310,43 +332,53 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-
     /**
      * Filling PieChart
-     * Add click listener to PieChart.
+     * Click listener to PieChart.
      * Adding date to RecyclerView with color of a specific slice
      *
-     * @param listCategories receive list with certain categories and count the duplicate values
+     * @param listExpenses receive list with certain categories and calculates their percentage
      */
-    private void fillPieChart(ArrayList<String> listCategories) {
+    private void testPieChart(ArrayList<FinanceModel> listExpenses) {
         /* List for display chart qColors */
         ArrayList<ColorModel> listColors = new ArrayList<>();
 
         /* HashMap for categories */
-        HashMap<String, Integer> hmCategories = new HashMap<>();
+        HashMap<String, Double> hmCategories = new HashMap<>();
 
         /* Queue with qColors */
         Queue<String> quColors = new LinkedList<>(Arrays.asList(aColors));
 
         /* Get duplicated categories */
-        for (String str : listCategories) {
-            if (hmCategories.containsKey(str)) {
-                hmCategories.put(str, hmCategories.get(str) + 1);
+        for (FinanceModel str : listExpenses) {
+            if (hmCategories.containsKey(str.getCategory())) {
+                hmCategories.put(str.getCategory(), hmCategories.get(str.getCategory()) + Integer.parseInt(str.getAmount()));
             } else {
-                hmCategories.put(str, 1);
+                hmCategories.put(str.getCategory(), Double.parseDouble(str.getAmount()));
             }
         }
+
+        /* Sum of total amounts */
+        double total = 0;
+        for (Double item : hmCategories.values()) {
+            total += item;
+        }
+
+        Log.d(TAG, "testPieChart: total: " + total);
 
         /* List with date for PieChart */
         final ArrayList<PieEntry> aListPieEntry = new ArrayList<>();
         ArrayList<Integer> pieColors = new ArrayList<>();
 
         /* Fill PieData for PieChartView */
-        for (Map.Entry<String, Integer> entry : hmCategories.entrySet()) {
-            Log.d(TAG, String.format("fillPieChart: entry is: %s, duplicate = %d ", entry.getKey(), entry.getValue()));
+        for (Map.Entry<String, Double> entry : hmCategories.entrySet()) {
+            double sumAll = +entry.getValue();
+            Log.d(TAG, "testPieChart: sum of all: " + sumAll);
+
+            double percent = getExpensePercent((double) entry.getValue(), Math.round(total));
 
             //Percent to show on pie chart
-            double percent = getExpensePercent((double) listCategories.size(), (double) entry.getValue());
+            //double percent = getExpensePercent((double) listCategories.size(), (double) entry.getValue());
 
             /* Received color from the queue */
             int color = Color.parseColor(quColors.poll());
@@ -355,7 +387,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             aListPieEntry.add(new PieEntry((float) percent, entry.getKey()));
 
             /* Add to list with colors */
-            listColors.add(new ColorModel(color, String.format("%s (%s)", entry.getKey(),  (double) Math.round(percent * 100) / 100 + "%")));
+            listColors.add(new ColorModel(color, entry.getKey(), (double) Math.round(percent * 100) / 100 + "%"));
 
             /* Add color to PieChat */
             pieColors.add(color);
@@ -377,7 +409,8 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             public void onValueSelected(Entry e, Highlight h) {
                 String selected = aListPieEntry.get((int) h.getX()).getLabel();
                 Log.d(TAG, "onValueSelected: Selected:" + selected);
-                Toast.makeText(getActivity(), selected, Toast.LENGTH_SHORT).show();
+                String translateSelected = getTitle(selected);
+                Toast.makeText(getActivity(), translateSelected, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -392,18 +425,29 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
 
         /* Add qColors to list View*/
         recyclerChartDescription.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerChartDescription.setAdapter(new ColorAdapter(listColors));
+        recyclerChartDescription.setAdapter(new ColorAdapter(getActivity(), listColors));
+    }
+
+    private String getTitle(String current){
+
+        for (CategoryEnum item: CategoryEnum.values()) {
+            String title = getResources().getString(item.getTitle());
+            if (item.name().contains(current)){
+                return title;
+            }
+        }
+        return "";
     }
 
     /**
      * Get a percentage of target expense
      *
-     * @param all
      * @param value
+     * @param sumAll
      * @return
      */
-    private double getExpensePercent(double all, double value) {
-        return ((value / all) * 100);
+    private double getExpensePercent(double value, double sumAll) {
+        return (value * 100) / sumAll;
     }
 
     @Override
@@ -415,7 +459,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             try {
                 if (InternetStatus.getConnectivityStatus(getActivity())) {
                     getAllExpense(sdf.parse(startDate), sdf.parse(endDate));
-                } else Toast.makeText(getActivity(), "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getActivity(), R.string.config_noInternet, Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -493,7 +537,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: puase");
+        Log.d(TAG, "onPause: pause");
         try {
             if (mServiceReceiver != null) {
                 getContext().unregisterReceiver(mServiceReceiver);

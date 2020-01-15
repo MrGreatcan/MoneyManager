@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="20dp"
@@ -12,9 +13,10 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/helvetica_bold"
         android:inputType="textMultiLine"
-        android:text="Note / Memories:"
+        android:text="@string/dConfirm_tNote"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        tools:ignore="TextViewEdits" />
 
     <TextView
         android:id="@+id/tvNote"
@@ -26,7 +28,8 @@
         android:inputType="textMultiLine"
         android:text=""
         android:textColor="@color/colorPrimary"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:ignore="TextViewEdits" />
 
     <Button
         android:id="@+id/btnClose"
@@ -39,7 +42,7 @@
         android:fontFamily="@font/helvetica_roman"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:text="Close"
+        android:text="@string/button_btnClose"
         android:textColor="@color/colorWhite"
         android:textSize="16sp" />
 

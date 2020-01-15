@@ -1,37 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/drawable_white_shadow"
-    android:paddingLeft="20dp"
+    android:paddingStart="20dp"
     android:paddingTop="15dp"
     android:paddingBottom="20dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/rlTextExpense"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="RelativeOverlap">
 
         <TextView
             android:id="@+id/tvExpenseText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/helvetica_roman"
-            android:text="Expense"
+            android:text="@string/aMenu_tExpense"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/tvExpenseCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvExpenseText"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/helvetica_bold"
+            android:text="@string/aMenu_tUserCurrency"
+            android:textColor="@color/colorPrimary"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/tvExpenseCurrency"
             android:id="@+id/tvExpense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvExpenseText"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/helvetica_bold"
-            android:text="$ 0.0"
+            android:text="0.0"
             android:textColor="@color/colorPrimary"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 
@@ -41,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="30dp">
+        android:layout_marginEnd="30dp">
 
         <Button
             android:id="@+id/btnAdd"
@@ -50,7 +67,8 @@
             android:background="@drawable/drawable_btn_add"
             android:text="+"
             android:textColor="@color/colorWhite"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

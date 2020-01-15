@@ -37,13 +37,15 @@ class CategoryAdapter(
         var inflator = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var view = inflator.inflate(R.layout.layout_category, null)
         view.ivIcon.setImageResource(category.icon_of_category)
-        view.tvTextCategory.text = category.name_of_category
+        view.tvTextCategory.text = context.resources.getString(category.name_of_category)
 
         view.parentLayout.setOnClickListener {
             Log.d(TAG, "getView: clicked on ${category.name_of_category}")
 
             if (callbackOn != null){
-                callbackOn.onItemClicked(text = category.name_of_category, icon = category.icon_of_category)
+                callbackOn.onItemClicked(
+                        text = context.resources.getString(category.name_of_category),
+                        icon = category.icon_of_category)
             }
         }
         return view

@@ -13,8 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.greatcan.moneysaver.activities.MainActivity;
 import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.activities.MainActivity;
+import com.greatcan.moneysaver.configuration.IntentExtras;
 
 public class ConfirmSignOutDialog extends DialogFragment implements View.OnClickListener {
 
@@ -27,7 +28,7 @@ public class ConfirmSignOutDialog extends DialogFragment implements View.OnClick
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_confirm_adding, container, false);
+        View view = inflater.inflate(R.layout.dialog_confirm_signout, container, false);
 
         Log.d(TAG, "onCreateView: started.");
 
@@ -39,16 +40,18 @@ public class ConfirmSignOutDialog extends DialogFragment implements View.OnClick
         return view;
     }
 
-
     @Override
     public void onClick(View v) {
         if (v == btnConfirm) {
             Log.d(TAG, "onClick: sign out...");
-            FirebaseAuth.getInstance().signOut();
             dismiss();
-            startActivity(new Intent(getActivity(), MainActivity.class));
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("SignOutKey", IntentExtras.SIGN_OUT_KEY);
+            startActivity(intent);
         }
-        if (v == tvCancel){
+        if (v == tvCancel) {
             dismiss();
         }
     }

@@ -45,4 +45,11 @@ public class CSVUtils {
         sb.append("\n");
         w.append(sb.toString());
     }
+
+    private static StringBuilder header = new StringBuilder();
+
+    public static StringBuilder getHeader() {
+        return header;
+    }
+
 }

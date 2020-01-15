@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="@color/colorWhite">
+    android:paddingBottom="10dp">
 
     <RelativeLayout
-        android:id="@+id/rlNumberField"
+        android:id="@+id/rlField"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        tools:ignore="RelativeOverlap">
 
-        <RelativeLayout
-            android:layout_marginLeft="10dp"
-            android:id="@+id/rlField"
+        <TextView
+            android:id="@+id/tvEnterAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:fontFamily="@font/helvetica_roman"
+            android:text="@string/lField_tEnterAmount"
+            android:textColor="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:id="@+id/rlTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvEnterAmount"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:textColor="@color/colorPrimary"
-                android:id="@+id/tvEnterAmount"
+                android:id="@+id/tvExpenseCurrency"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvAmount"
+                android:layout_marginBottom="5dp"
                 android:fontFamily="@font/helvetica_roman"
-                android:layout_height="wrap_content"
-                android:text="Enter the amount" />
+                android:text="@string/aMenu_tUserCurrency"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
 
-            <RelativeLayout
-                android:layout_marginTop="10dp"
-                android:id="@+id/rlTextView"
+            <TextView
+                android:layout_marginStart="5dp"
+                android:id="@+id/tvAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvEnterAmount">
-
-                <TextView
-                    android:fontFamily="@font/helvetica_roman"
-                    android:textColor="@color/colorPrimary"
-                    android:id="@+id/tvMoney"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/tvAmount"
-                    android:layout_marginBottom="5dp"
-                    android:text="$ "
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:fontFamily="@font/helvetica_bold"
-                    android:textColor="@color/colorPrimary"
-                    android:id="@+id/tvAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/tvMoney"
-                    android:text="0"
-                    android:textSize="32sp" />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true">
-
-            <include layout="@layout/layout_select_category" />
+                android:layout_toEndOf="@id/tvExpenseCurrency"
+                android:fontFamily="@font/helvetica_bold"
+                android:text="0"
+                android:textColor="@color/colorPrimary"
+                android:textSize="32sp"
+                tools:ignore="HardcodedText" />
 
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true">
+
+        <include layout="@layout/layout_select_category" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

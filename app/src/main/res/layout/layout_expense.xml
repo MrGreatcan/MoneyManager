@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="20dp">
 
@@ -17,55 +18,71 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:src="@drawable/icon_baby"
-            android:tint="@color/colorGray" />
+            android:tint="@color/colorGray"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_centerVertical="true"
         android:id="@+id/rlDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/relIcon">
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/relIcon">
 
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
-            android:fontFamily="@font/helvetica_roman"
-            android:textSize="16sp"
             android:layout_height="wrap_content"
-            android:text="Food" />
+            android:fontFamily="@font/helvetica_roman"
+            android:text="Food"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
-            android:layout_below="@id/tvCategory"
             android:id="@+id/tvDate"
-            android:fontFamily="@font/helvetica_roman"
             android:layout_width="wrap_content"
-            android:textSize="10sp"
-            android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
-            android:text="12.10.2019" />
+            android:layout_below="@id/tvCategory"
+            android:fontFamily="@font/helvetica_roman"
+            android:text="12.10.2019"
+            android:textColor="@color/colorPrimary"
+            android:textSize="10sp"
+            tools:ignore="HardcodedText,SmallSp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
         android:id="@+id/rlAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp">
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        tools:ignore="RelativeOverlap">
+
+        <TextView
+            android:id="@+id/tvExpenseCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/helvetica_bold"
+            android:text="@string/aMenu_tUserCurrency"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvAmount"
-            android:fontFamily="@font/helvetica_bold"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
-            android:textSize="28sp"
             android:layout_height="wrap_content"
-            android:text="$5.40" />
+            android:layout_marginStart="1dp"
+            android:layout_toEndOf="@id/tvExpenseCurrency"
+            android:fontFamily="@font/helvetica_bold"
+            android:text="0.0"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

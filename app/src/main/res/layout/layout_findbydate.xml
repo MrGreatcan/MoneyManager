@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rlStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/helvetica_roman"
+            android:text="@string/field_tFindFrom"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/fieldStartDate"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_below="@id/tvStartDate"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/drawable_field"
+            android:clickable="true"
+            android:focusable="false"
+            android:fontFamily="@font/helvetica_roman"
+            android:inputType="none"
+            android:text="@string/field_tStart"
+            android:textSize="18sp"
+            tools:ignore="KeyboardInaccessibleWidget,TextFields" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/rlStartDate">
+
+        <TextView
+            android:id="@+id/tvEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/helvetica_roman"
+            android:text="@string/field_tFindTo"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/fieldEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_below="@+id/tvEndDate"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/drawable_field"
+            android:clickable="true"
+            android:focusable="false"
+            android:fontFamily="@font/helvetica_roman"
+            android:inputType="none"
+            android:text="@string/field_tEnd"
+            android:textSize="18sp"
+            tools:ignore="KeyboardInaccessibleWidget,TextFields" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@id/rlEndDate"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/rlEndDate"
+        android:background="@drawable/drawable_default_btn"
+        android:drawableStart="@drawable/drawable_btn_search"
+        android:drawableTint="@color/colorLightGray"
+        android:fontFamily="@font/helvetica_thin"
+        android:padding="15dp"
+        android:paddingStart="27dp"
+        android:textColor="@color/colorWhite"
+        tools:ignore="RtlSymmetry,UnusedAttribute" />
+
+</RelativeLayout>

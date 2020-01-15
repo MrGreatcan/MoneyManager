@@ -1,0 +1,107 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Money Manager</string>
+
+    <!-- Buttons -->
+    <string name="button_btnCancel">Вiдмiна</string>
+    <string name="button_btnConfirm">Прийняти</string>
+    <string name="button_btnOK">OK</string>
+    <string name="button_btnClose">Закрити</string>
+
+    <!-- Fields -->
+    <string name="field_tStart">Вiд</string>
+    <string name="field_tEnd">До</string>
+    <string name="field_tFindFrom">Шукати вiд:</string>
+    <string name="field_tFindTo">Шукати до:</string>
+
+    <!-- Main activity -->
+    <string name="aMain_tWelcome">Ласкаво просимо в</string>
+    <string name="aMain_btnGoogle">Вхiд через Google</string>
+
+    <!-- Menu activity -->
+    <string name="aMenu_tMonthlyBalance">Мiсячний баланс</string>
+    <string name="aMenu_tUserCurrency">₴</string>
+    <string name="aMenu_tExpense">Витрати</string>
+
+    <!-- Layout field -->
+    <string name="lField_tEnterAmount">Введiть суму</string>
+    <string name="lField_tCategory">Категорiя</string>
+    <string name="lField_tDate">Дата</string>
+
+    <!-- Dialog confirm adding -->
+    <string name="dConfirm_tSure">Ви впевненi?</string>
+    <string name="dConfirm_tNote">Нотатки</string>
+
+    <!-- Dialog sign out -->
+    <string name="dSignOut_tSure">Ви дiйсно хочете вийти?</string>
+
+    <!-- Dialog export -->
+    <string name="dExport_tFrom">Експортувати</string>
+
+    <!-- Fragment analysis -->
+    <string name="fAnalysis_tExpense">Витрати:</string>
+    <string name="fAnalysis_tBalance">Баланс:</string>
+    <string name="fAnalysis_tNothing">Нiчого нема</string>
+
+    <!-- Fragment expense -->
+    <string name="fExpense_Nothing">У вас немає витрат"</string>
+
+    <!-- Configuration -->
+    <string name="config_noInternet" tools:ignore="TypographyEllipsis">Нема інтернет з\'єднання... спробуйте пізніше</string>
+    <string name="config_requiredDateAmount">Необхiдно ввести дату та суму</string>
+    <string name="config_monthlyBalance">Введiть свiй мicячний баланс</string>
+    <string name="config_fileSaved">Файл був збережиний в папку Завантаження</string>
+    <string name="config_fileError" tools:ignore="TypographyEllipsis">Неможливо зберегти файл... спробуйте пiзнiше</string>
+    <string name="config_permissionGranted" >Дозвіл надано, тепер ви можете використовувати локальний диск</string>
+    <string name="config_permissionDenied">Немає доступу, ви не можете використовувати локальний диск</string>
+    <string name="config_wrongDate">Невірна дата</string>
+    <string name="config_tExport">Експортувати</string>
+    <string name="config_tCurrency">Валюта</string>
+    <string name="config_tSignOut">Вихiд</string>
+    <string name="config_selected">Вибрано:</string>
+
+    <!-- View pager -->
+    <string name="view_menu">Меню</string>
+    <string name="view_stats">Статистика</string>
+    <string name="view_settings">Налаштування</string>
+
+    <!-- Dialog select currency -->
+    <string name="dSelect_tvSelectCurrency">Виберiть валюту</string>
+
+    <!-- Categories -->
+    <string name="category_bills">Банк</string>
+    <string name="category_food">Харчування</string>
+    <string name="category_transportation">Общ. Заг. транспорт</string>
+    <string name="category_home">Будинок</string>
+    <string name="category_car">Машина</string>
+    <string name="category_entertainment">Розваги</string>
+    <string name="category_shopping">Покупки</string>
+    <string name="category_clothing">Одяг</string>
+    <string name="category_insurance">Страхування</string>
+    <string name="category_tax">Податки</string>
+    <string name="category_telephone">Телефон</string>
+    <string name="category_cigarette">Сигарети</string>
+    <string name="category_health">Здоров\'я</string>
+    <string name="category_sport">Спорт</string>
+    <string name="category_baby">Дитина</string>
+    <string name="category_pet">Тварини</string>
+    <string name="category_beauty">Краса</string>
+    <string name="category_electronics">Електроніка</string>
+    <string name="category_hamburger">Гамбургери</string>
+    <string name="category_wine">Вино</string>
+    <string name="category_vegetables">Овочі</string>
+    <string name="category_snacks">Закуски</string>
+    <string name="category_gift">Подарунок</string>
+    <string name="category_social">Соціальні</string>
+    <string name="category_travel">Подорож</string>
+    <string name="category_education">Навчання</string>
+    <string name="category_fruits">Фрукти</string>
+    <string name="category_book">Книги</string>
+    <string name="category_office">Офіс</string>
+    <string name="category_others">Iнше</string>
+
+    <!-- Currency -->
+    <string name="dollar">Доллар</string>
+    <string name="rubl">Рубль</string>
+    <string name="hrivnia">Гривня</string>
+
+</resources>

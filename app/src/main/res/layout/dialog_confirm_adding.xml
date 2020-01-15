@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorLightGray"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/helvetica_roman"
-        android:hint="Are you sure?"
+        android:hint="@string/dConfirm_tSure"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp" />
 
@@ -23,7 +24,8 @@
         android:layout_below="@id/tvDialogTitle"
         android:layout_marginTop="10dp"
         android:background="@drawable/drawable_field"
-        android:hint="Note / Memories" />
+        android:hint="@string/dConfirm_tNote"
+        tools:ignore="Autofill,TextFields" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -41,7 +43,7 @@
             android:fontFamily="@font/helvetica_roman"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:text="Cancel"
+            android:text="@string/button_btnCancel"
             android:textSize="18sp" />
 
 
@@ -49,12 +51,12 @@
             android:id="@+id/btnConfirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tvCancel"
+            android:layout_toEndOf="@id/tvCancel"
             android:background="@drawable/drawable_default_btn"
             android:fontFamily="@font/helvetica_roman"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:text="Confirm"
+            android:text="@string/button_btnConfirm"
             android:textColor="@color/colorLightGray" />
 
     </RelativeLayout>

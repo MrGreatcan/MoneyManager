@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/colorLightGray"
@@ -16,7 +17,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="20dp"
             android:fontFamily="@font/helvetica_bold"
-            android:text="Export from"
+            android:text="@string/dExport_tFrom"
             android:textSize="24sp" />
 
         <!-- Find by date-->
@@ -44,8 +45,9 @@
                     android:focusable="false"
                     android:fontFamily="@font/helvetica_roman"
                     android:inputType="none"
-                    android:text="Start date"
-                    android:textSize="18sp" />
+                    android:text="@string/field_tStart"
+                    android:textSize="18sp"
+                    tools:ignore="KeyboardInaccessibleWidget,TextFields" />
 
             </RelativeLayout>
 
@@ -67,8 +69,9 @@
                     android:focusable="false"
                     android:fontFamily="@font/helvetica_roman"
                     android:inputType="none"
-                    android:text="End date"
-                    android:textSize="18sp" />
+                    android:text="@string/field_tEnd"
+                    android:textSize="18sp"
+                    tools:ignore="KeyboardInaccessibleWidget,TextFields" />
 
             </RelativeLayout>
 
@@ -90,19 +93,19 @@
                 android:fontFamily="@font/helvetica_roman"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:text="Cancel"
+                android:text="@string/button_btnCancel"
                 android:textSize="18sp" />
 
             <Button
                 android:id="@+id/btnOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tvCancel"
+                android:layout_toEndOf="@id/tvCancel"
                 android:background="@drawable/drawable_default_btn"
                 android:fontFamily="@font/helvetica_roman"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:text="OK"
+                android:text="@string/button_btnOK"
                 android:textColor="@color/colorLightGray" />
 
         </RelativeLayout>
@@ -112,7 +115,6 @@
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_marginTop="50dp"
-        android:layout_below="@+id/rlStats"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

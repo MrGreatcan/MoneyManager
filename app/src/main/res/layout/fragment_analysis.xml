@@ -18,86 +18,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp">
 
-            <RelativeLayout
-                android:id="@+id/rlStartDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tvStartDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:fontFamily="@font/helvetica_roman"
-                    android:text="Start date: "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/fieldStartDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_below="@id/tvStartDate"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/drawable_field"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:fontFamily="@font/helvetica_roman"
-                    android:inputType="none"
-                    android:text="Start date"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlEndDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/rlStartDate">
-
-
-                <TextView
-                    android:id="@+id/tvEndDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:fontFamily="@font/helvetica_roman"
-                    android:text="End date: "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/fieldEndDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_below="@+id/tvEndDate"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/drawable_field"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:fontFamily="@font/helvetica_roman"
-                    android:inputType="none"
-                    android:text="End date"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <Button
-                android:id="@+id/btnSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_alignBottom="@id/rlEndDate"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/rlEndDate"
-                android:background="@drawable/drawable_default_btn"
-                android:drawableStart="@drawable/drawable_btn_search"
-                android:drawableTint="@color/colorLightGray"
-                android:fontFamily="@font/helvetica_thin"
-                android:padding="15dp"
-                android:paddingStart="27dp"
-                android:textColor="@color/colorWhite" />
-
+         <include layout="@layout/layout_findbydate"/>
 
         </RelativeLayout>
 
@@ -108,85 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rlFindByDate">
 
-            <RelativeLayout
-                android:id="@+id/rlTextMonthlyBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
-
-                <TextView
-                    android:id="@+id/tvMonthlyBalanceText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Monthly balance: "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tvMonthlyBalance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tvMonthlyBalanceText"
-                    android:text="$5454"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlTextExpense"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rlTextMonthlyBalance"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/tvExpenseText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Expense: "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tvExpense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tvExpenseText"
-                    android:text="$5454"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlTextBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rlTextExpense"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/tvBalanceText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Balance: "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tvBalance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/tvBalanceText"
-                    android:text="$5454"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
+            <include layout="@layout/layout_statistics"/>
 
         </RelativeLayout>
 
@@ -245,7 +88,7 @@
             <TextView
                 android:textSize="24sp"
                 android:layout_centerHorizontal="true"
-                android:text="Nothing to show"
+                android:text="@string/fAnalysis_tNothing"
                 android:fontFamily="@font/helvetica_roman"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

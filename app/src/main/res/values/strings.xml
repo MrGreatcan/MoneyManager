@@ -1,3 +1,111 @@
-<resources>
-    <string name="app_name">MoneySaver</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Money Manager</string>
+
+    <!-- Buttons -->
+    <string name="button_btnCancel">Cancel</string>
+    <string name="button_btnConfirm">Confirm</string>
+    <string name="button_btnOK">OK</string>
+    <string name="button_btnClose">Close</string>
+
+    <!-- Fields -->
+    <string name="field_tStart">Start date</string>
+    <string name="field_tEnd">End date</string>
+    <string name="field_tFindFrom">Find from:</string>
+    <string name="field_tFindTo">Find to:</string>
+
+    <!-- Main activity -->
+    <string name="aMain_tWelcome">Welcome to</string>
+    <string name="aMain_btnGoogle">Sign in with google</string>
+
+    <!-- Menu activity -->
+    <string name="aMenu_tMonthlyBalance">Monthly balance</string>
+    <string name="aMenu_tUserCurrency">$</string>
+    <string name="aMenu_tExpense">Expense</string>
+
+    <!-- Layout field -->
+    <string name="lField_tEnterAmount">Enter the amount</string>
+    <string name="lField_tCategory">Category</string>
+    <string name="lField_tDate">Date</string>
+
+    <!-- Dialog confirm adding -->
+    <string name="dConfirm_tSure">Are you sure?</string>
+    <string name="dConfirm_tNote">Note / Memories</string>
+
+    <!-- Dialog sign out -->
+    <string name="dSignOut_tSure">Are you sure you want to sign out?</string>
+
+    <!-- Dialog export -->
+    <string name="dExport_tFrom">Export from</string>
+
+    <!-- Fragment analysis -->
+    <string name="fAnalysis_tExpense">Expense:</string>
+    <string name="fAnalysis_tBalance">Balance:</string>
+    <string name="fAnalysis_tNothing">Nothing to show</string>
+
+    <!-- Fragment expense -->
+    <string name="fExpense_Nothing">No expense yet. \n Try to add your first expense"</string>
+
+    <!-- Configuration -->
+    <string name="config_noInternet" tools:ignore="TypographyEllipsis">No internet connection... Try again later</string>
+    <string name="config_requiredDateAmount">Date and amount is required</string>
+    <string name="config_monthlyBalance">Enter your monthly balance</string>
+    <string name="config_fileSaved">File was saved to Downloads</string>
+    <string name="config_fileError" tools:ignore="TypographyEllipsis">Cannot save file... Try again later</string>
+    <string name="config_permissionGranted" >Permission Granted, Now you can use local drive</string>
+    <string name="config_permissionDenied">Permission Denied, You cannot use local drive</string>
+    <string name="config_wrongDate">Date is wrong</string>
+    <string name="config_tExport">Export</string>
+    <string name="config_tCurrency">Currency</string>
+    <string name="config_tSignOut">Sign out</string>
+    <string name="config_selected">Selected:</string>
+
+    <!-- View pager -->
+    <string name="view_menu">Menu</string>
+    <string name="view_stats">Statistics</string>
+    <string name="view_settings">Settings</string>
+    
+    <!-- Dialog select currency -->
+    <string name="dSelect_tvSelectCurrency">Select your currency</string>
+
+    <!-- Categories -->
+    <string name="category_bills">Bills</string>
+    <string name="category_food">Food</string>
+    <string name="category_transportation">Transportation</string>
+    <string name="category_home">Home</string>
+    <string name="category_car">Car</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_clothing">Clothing</string>
+    <string name="category_insurance">Insurance</string>
+    <string name="category_tax">Tax</string>
+    <string name="category_telephone">Telephone</string>
+    <string name="category_cigarette">Cigarette</string>
+    <string name="category_health">Health</string>
+    <string name="category_sport">Sport</string>
+    <string name="category_baby">Baby</string>
+    <string name="category_pet">Pet</string>
+    <string name="category_beauty">Beauty</string>
+    <string name="category_electronics">Electronics</string>
+    <string name="category_hamburger">Hamburger</string>
+    <string name="category_wine">Wine</string>
+    <string name="category_vegetables">Vegetables</string>
+    <string name="category_snacks">Snacks</string>
+    <string name="category_gift">Gift</string>
+    <string name="category_social">Social</string>
+    <string name="category_travel">Travel</string>
+    <string name="category_education">Education</string>
+    <string name="category_fruits">Fruits</string>
+    <string name="category_book">Book</string>
+    <string name="category_office">Office</string>
+    <string name="category_others">Others</string>
+
+    <!-- Currency -->
+    <string name="dollar">United States Dollar</string>
+    <string name="rubl">Russian Ruble</string>
+    <string name="hrivnia">Ukrainian Hryvnia</string>
+
+    <string name="dollar_sign" translatable="false">$</string>
+    <string name="ruble_sing" translatable="false">₽</string>
+    <string name="hrivnia_sign" translatable="false">₴</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.greatcan.moneysaver.dialogs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -28,11 +29,18 @@ public class MonthBalanceDialog extends DialogFragment implements View.OnClickLi
     private TextView tvAmount;
     private Button btnRemove, btnConfirm;
     private String date;
+    private int amount = 0;
 
     public MonthBalanceDialog(String date) {
         this.date = date;
     }
 
+    public MonthBalanceDialog(String date, int amount) {
+        this.date = date;
+        this.amount = amount;
+    }
+
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,11 +83,11 @@ public class MonthBalanceDialog extends DialogFragment implements View.OnClickLi
 
         rlCategory.setVisibility(View.GONE);
 
-        tvEnterAmount.setText("Enter your monthly balance: ");
+        tvEnterAmount.setText(R.string.lField_tEnterAmount + ":");
 
         //Filter for amount
         tvAmount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(8, 2)});
-        tvAmount.setText("");
+        tvAmount.setText(amount != 0 ? String.valueOf(amount) : "");
 
         return view;
     }
@@ -121,7 +129,7 @@ public class MonthBalanceDialog extends DialogFragment implements View.OnClickLi
                 Log.d(TAG, "onClick: balance: " + balance);
 
             } else {
-                Toast.makeText(getActivity(), "Enter your monthly balance", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.config_monthlyBalance, Toast.LENGTH_SHORT).show();
             }
         }
         if (v == btnRemove) {

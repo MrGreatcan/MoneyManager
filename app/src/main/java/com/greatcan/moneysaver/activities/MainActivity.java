@@ -1,10 +1,5 @@
 package com.greatcan.moneysaver.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +11,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -41,11 +41,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.configuration.CurrencyEnum;
+import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.models.UserModel;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+import java.util.Objects;
+
+public class MainActivity extends AppCompatActivity implements
+        View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -78,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-
         }
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -100,9 +105,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
 
         btnSignInWithGoogle.setOnClickListener(this);
+
+        Intent intent = getIntent();
+        int code = intent.getIntExtra("SignOutKey", 0);
+        if (code == IntentExtras.SIGN_OUT_KEY) {
+            Log.d(TAG, "onCreate: signing out");
+            mGoogleSignInClient.signOut();
+        }
     }
 
-
+    /**
+     * if user data already exists in database
+     *
+     * @param user
+     */
     private void checkUserData(final FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection(FirebaseReferences.USER.getReferences()).document(user.getUid());
@@ -111,35 +127,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+                    if (document != null && document.exists()) {
                         Log.d(TAG, "User was found");
                     } else {
                         Log.d(TAG, "No such document");
 
-                        UserModel userModel = new UserModel(user.getUid(), user.getDisplayName(), user.getEmail(), user.getPhoneNumber());
+                        UserModel userModel = new UserModel(user.getUid(), user.getDisplayName(),
+                                user.getEmail(), user.getPhoneNumber(), getResources().getString(CurrencyEnum.DOLLAR.getCurrency()));
                         saveToDatabase(userModel);
-                        checkUserMoney(user);
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-    }
-
-    private void checkUserMoney(final FirebaseUser user) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection(FirebaseReferences.USER.getReferences()).document(user.getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d(TAG, "User was found");
-                    } else {
-                        Log.d(TAG, "No such document");
-                        //createMoneyAccount(user);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -182,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            assert user != null;
                             checkUserData(user);
                             startActivity(intent);
                             finish();
@@ -201,19 +197,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+                firebaseAuthWithGoogle(Objects.requireNonNull(account));
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
+        String name = data.getStringExtra("name");
+        Log.d(TAG, "onActivityResult: name is: " + name);
     }
 
     @Override
@@ -224,18 +221,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btnSignInWithGoogle) {
-            if (InternetStatus.getConnectivityStatus(this)){
+            if (InternetStatus.getConnectivityStatus(this)) {
 
                 Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                         new ResultCallback<Status>() {
                             @Override
                             public void onResult(Status status) {
+                                Log.d(TAG, "onResult: accounts was revoked");
                             }
                         });
 
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
-            }else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(this, R.string.config_noInternet, Toast.LENGTH_SHORT).show();
         }
     }
 

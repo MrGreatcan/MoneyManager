@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rlTextExpense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tvExpenseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fAnalysis_tExpense"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvExpenseCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_toEndOf="@id/tvExpenseText"
+            android:text="@string/aMenu_tUserCurrency"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tvExpenseCurrency"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlTextBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlTextExpense"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tvBalanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fAnalysis_tBalance"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvBalanceCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_toEndOf="@id/tvBalanceText"
+            android:text="@string/aMenu_tUserCurrency"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tvBalanceCurrency"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

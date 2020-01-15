@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
@@ -20,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="@font/helvetica_roman"
-                android:text="Welcome to"
+                android:text="@string/aMain_tWelcome"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
                 android:textSize="30sp" />
@@ -37,7 +38,8 @@
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/colorWhite"
-                android:textSize="40sp" />
+                android:textSize="40sp"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:translationY="-25dp"
@@ -48,7 +50,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="40dp"
                 android:src="@drawable/ic_coin"
-                android:tint="@color/colorAccent" />
+                android:tint="@color/colorAccent"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 
@@ -62,7 +65,7 @@
             android:layout_marginBottom="50dp"
             android:background="@drawable/drawable_default_btn"
             android:fontFamily="@font/helvetica_thin"
-            android:text="Sign in with Google"
+            android:text="@string/aMain_btnGoogle"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
             android:textSize="18sp" />

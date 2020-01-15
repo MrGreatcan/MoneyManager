@@ -62,7 +62,6 @@ dependencies {
 
     /* HelloChart */
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
-
 }
 
 repositories {

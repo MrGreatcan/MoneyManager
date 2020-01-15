@@ -1,12 +1,5 @@
 package com.greatcan.moneysaver.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +24,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.greatcan.moneysaver.R;
 import com.greatcan.moneysaver.adapters.ExpenseAdapter;
 import com.greatcan.moneysaver.configuration.date.CurrentDate;
-import com.greatcan.moneysaver.models.FinanceModel;
 import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
+import com.greatcan.moneysaver.models.FinanceModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -98,7 +98,7 @@ public class ExpenseFragment extends Fragment {
                         else rlNoExpense.setVisibility(View.GONE);
 
                         recyclerListExpense.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        recyclerListExpense.setAdapter(new ExpenseAdapter(listExpenses, Objects.requireNonNull(getActivity())));
+                        recyclerListExpense.setAdapter(new ExpenseAdapter(Objects.requireNonNull(getActivity()),listExpenses, Objects.requireNonNull(getActivity())));
 
                         Collections.sort(listExpenses, new Comparator<FinanceModel>() {
                             /**

@@ -106,7 +106,7 @@ public class KeyboardFragment extends Fragment implements
 
         dialog = new Dialog(getContext());
 
-        tvTextCategory.setText(CategoryEnum.Others.toString());
+        tvTextCategory.setText(CategoryEnum.Others.getTitle());
         ivIcon.setImageResource(CategoryEnum.Others.getResource());
 
     }
@@ -133,7 +133,8 @@ public class KeyboardFragment extends Fragment implements
         ArrayList<CategoryModel> listCategory = new ArrayList<>();
 
         for (CategoryEnum item : CategoryEnum.values()) {
-            listCategory.add(new CategoryModel(item.toString(), item.getResource()));
+            Log.d(TAG, "getListCategories: titles: " + item.getTitle());
+            listCategory.add(new CategoryModel(item.getTitle(), item.getResource()));
         }
         return listCategory;
     }
@@ -204,7 +205,8 @@ public class KeyboardFragment extends Fragment implements
             }
         }
         if (view == btnOk) {
-            String category = tvTextCategory.getText().toString().trim();
+            //String category = tvTextCategory.getText().toString().trim();
+            String category = getEnglishCategory(tvTextCategory.getText().toString().trim());
             String date = selectedDate;
             String amount = tvAmount.getText().toString().trim();
 
@@ -214,8 +216,19 @@ public class KeyboardFragment extends Fragment implements
                 confirmAddingDialog.show(getActivity().getSupportFragmentManager(), "Confirm adding");
 
                 tvAmount.setText("");
-                btnDate.setText("date");
-            } else Toast.makeText(getActivity(), "Date and amount is required", Toast.LENGTH_SHORT).show();
+                btnDate.setText(R.string.lField_tDate);
+            } else Toast.makeText(getActivity(), R.string.config_requiredDateAmount, Toast.LENGTH_SHORT).show();
         }
     }
+
+    private String getEnglishCategory(String category){
+        for (CategoryEnum item: CategoryEnum.values()) {
+            String title = getResources().getString(item.getTitle());
+            if (title.equals(category)){
+                return item.name();
+            }
+        }
+        return "";
+    }
+
 }

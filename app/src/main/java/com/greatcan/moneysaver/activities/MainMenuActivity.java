@@ -8,8 +8,8 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,22 +32,23 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.greatcan.moneysaver.configuration.network.InternetStatus;
-import com.greatcan.moneysaver.fragments.AnalysisFragment;
-import com.greatcan.moneysaver.fragments.ExpenseFragment;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
-import com.greatcan.moneysaver.fragments.KeyboardFragment;
 import com.greatcan.moneysaver.R;
-import com.greatcan.moneysaver.fragments.SettingsFragment;
 import com.greatcan.moneysaver.adapters.SectionPagerAdapter;
-import com.greatcan.moneysaver.configuration.date.CurrentDate;
-import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.IntentExtras;
 import com.greatcan.moneysaver.configuration.ReceiverAction;
+import com.greatcan.moneysaver.configuration.date.CurrentDate;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseAction;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseManager;
+import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
+import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.dialogs.ConfirmAddingDialog;
 import com.greatcan.moneysaver.dialogs.MonthBalanceDialog;
+import com.greatcan.moneysaver.fragments.AnalysisFragment;
+import com.greatcan.moneysaver.fragments.ExpenseFragment;
+import com.greatcan.moneysaver.fragments.KeyboardFragment;
+import com.greatcan.moneysaver.fragments.SettingsFragment;
 import com.greatcan.moneysaver.models.FinanceModel;
+import com.greatcan.moneysaver.models.UserModel;
 import com.greatcan.moneysaver.models.UserMoneyModel;
 
 import java.text.ParseException;
@@ -55,6 +56,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Objects;
 
 public class MainMenuActivity extends AppCompatActivity implements
         MonthBalanceDialog.OnConfirmBalanceListener,
@@ -65,10 +67,13 @@ public class MainMenuActivity extends AppCompatActivity implements
 
     //Objects
     private ViewPager viewPager;
-    private TextView tvMonthlyBalance, tvCurrentBalance;
+    private TextView tvMonthlyBalance;
     private TextView tvExpense;
     private Button btnAdd;
     private ProgressBar progressBar;
+
+    //Currency
+    private TextView tvExpenseCurrency, tvMonthlyCurrency;
 
     //Firebase
     private FirebaseFirestore db;
@@ -96,10 +101,14 @@ public class MainMenuActivity extends AppCompatActivity implements
         progressBar = findViewById(R.id.progressBar);
         viewPager = findViewById(R.id.viewPager);
         tvMonthlyBalance = findViewById(R.id.tvMonthlyBalance);
-        tvCurrentBalance = findViewById(R.id.tvCurrentBalance);
         tvExpense = findViewById(R.id.tvExpense);
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
+        tvMonthlyBalance.setOnClickListener(this);
+
+        /* Currency */
+        tvExpenseCurrency = findViewById(R.id.tvExpenseCurrency);
+        tvMonthlyCurrency = findViewById(R.id.tvMonthlyCurrency);
 
         View bottomKeyboard = findViewById(R.id.bottomKeyboard);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomKeyboard);
@@ -122,8 +131,7 @@ public class MainMenuActivity extends AppCompatActivity implements
         });
 
         amountOfExpenses = 0.0d;
-        tvCurrentBalance.setText("$0");
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
         firebaseManager = new FirebaseManager(this);
 
@@ -132,7 +140,28 @@ public class MainMenuActivity extends AppCompatActivity implements
         firebaseManager.firebaseMenu(FirebaseAction.MENU_MONTHLY_BALANCE);
 
         hasDateInDatabase(CurrentDate.getCurrentDate());
+
     }
+
+    /**
+     * Receiving user currency from database
+     */
+    private void getUserCurrency() {
+        db.collection(FirebaseReferences.USER.getReferences())
+                .document(currentUser.getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            UserModel model = documentSnapshot.toObject(UserModel.class);
+                            tvExpenseCurrency.setText(model.getCurrency());
+                            tvMonthlyCurrency.setText(model.getCurrency());
+                        }
+                    }
+                });
+    }
+
 
     /**
      * Responsible for receiving date from FirebaseManager.class
@@ -145,9 +174,11 @@ public class MainMenuActivity extends AppCompatActivity implements
             String action = intent.getAction();
 
             if (action != null && action.equals(ReceiverAction.MENU_MONTHLY_ACTION)) {
+                progressBar.setVisibility(View.VISIBLE);
                 String monthlyBalance = intent.getStringExtra(IntentExtras.MONTHLY_KEY);
                 tvMonthlyBalance.setText(monthlyBalance);
                 getAllExpense();
+                getUserCurrency();
             }
         }
     };
@@ -156,8 +187,6 @@ public class MainMenuActivity extends AppCompatActivity implements
      * Get expense
      */
     private void getAllExpense() {
-        progressBar.setVisibility(View.VISIBLE);
-
         amountOfExpenses = 0.0d;
         tempExpense = 0.0d;
         db.collection(FirebaseReferences.MONEY.getReferences())
@@ -194,8 +223,7 @@ public class MainMenuActivity extends AppCompatActivity implements
                         double monthBalance = Double.parseDouble(tvMonthlyBalance.getText().toString());
                         Log.d(TAG, "onSuccess: monthBalance: " + monthBalance);
                         Log.d(TAG, "onSuccess: amount of expense: " + amountOfExpenses);
-                        //tvExpense.setText(amountOfExpenses <= monthBalance ? "$ " + amountOfExpenses : "- $ " + amountOfExpenses);
-                        tvExpense.setText("$ " + amountOfExpenses);
+                        tvExpense.setText(String.valueOf(amountOfExpenses));
                         tempExpense = 0.0d;
                         progressBar.setVisibility(View.GONE);
                     }
@@ -222,9 +250,9 @@ public class MainMenuActivity extends AppCompatActivity implements
         TabLayout tabLayout = findViewById(R.id.toolbarTabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setText("Menu");
-        tabLayout.getTabAt(1).setText("Statistics");
-        tabLayout.getTabAt(2).setText("Settings");
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setText(R.string.view_menu);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setText(R.string.view_stats);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setText(R.string.view_settings);
     }
 
     /**
@@ -297,13 +325,14 @@ public class MainMenuActivity extends AppCompatActivity implements
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.d(TAG, "onSuccess: Date was successfully added");
+                                setupViewPager();
                                 firebaseManager.firebaseMenu(FirebaseAction.MENU_MONTHLY_BALANCE);
                                 progressBar.setVisibility(View.GONE);
 
                             }
                         });
             }
-        } else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.config_noInternet, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -333,7 +362,7 @@ public class MainMenuActivity extends AppCompatActivity implements
                             }
                         });
             }
-        } else Toast.makeText(this, "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.config_noInternet, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -342,6 +371,11 @@ public class MainMenuActivity extends AppCompatActivity implements
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             String currentMonth = CurrentDate.getCurrentDate();
             hasDateInDatabase(currentMonth);
+        }
+        if (view == tvMonthlyBalance) {
+            int amount = Integer.parseInt(tvMonthlyBalance.getText().toString());
+            MonthBalanceDialog monthBalanceDialog = new MonthBalanceDialog(CurrentDate.getCurrentDate(), amount);
+            monthBalanceDialog.show(getSupportFragmentManager(), "Month balance");
         }
     }
 
@@ -379,4 +413,5 @@ public class MainMenuActivity extends AppCompatActivity implements
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }

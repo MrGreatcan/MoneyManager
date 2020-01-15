@@ -1,5 +1,7 @@
 package com.greatcan.moneysaver.adapters
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,7 @@ import com.greatcan.moneysaver.configuration.CategoryEnum
 import com.greatcan.moneysaver.models.ColorModel
 
 class ColorAdapter(
+        var context: Context,
         var expensesList: ArrayList<ColorModel>
 ) : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
 
@@ -23,18 +26,25 @@ class ColorAdapter(
         return ViewHolder(view!!)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var model: ColorModel = expensesList[position]
 
         Log.d(TAG, "onBindViewHolder: starting ")
         holder.vColor.setBackgroundColor(model.bg_color)
-        holder.tvColorName.text = model.name_color
+        holder.tvColorName.text = getTitle(model.name_color) + "(${model.percent})"
     }
 
-    private fun getIcon(name: String): Int {
-        var b: CategoryEnum = CategoryEnum.valueOf(name)
-        return b.resource
+    private fun getTitle(current: String): String {
+        for (item in CategoryEnum.values()) {
+            val title = context.resources.getString(item.title)
+            if (item.name.contains(current)) {
+                return title
+            }
+        }
+        return ""
     }
+
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val vColor: View = itemView.findViewById(R.id.vColor)

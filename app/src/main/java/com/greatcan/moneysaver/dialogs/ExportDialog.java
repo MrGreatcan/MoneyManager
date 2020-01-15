@@ -30,15 +30,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.greatcan.moneysaver.configuration.CSVUtils;
 import com.greatcan.moneysaver.R;
+import com.greatcan.moneysaver.configuration.CSVUtils;
 import com.greatcan.moneysaver.configuration.date.DateRange;
 import com.greatcan.moneysaver.configuration.firebase.FirebaseReferences;
 import com.greatcan.moneysaver.configuration.network.InternetStatus;
 import com.greatcan.moneysaver.models.FinanceModel;
+import com.greatcan.moneysaver.models.UserModel;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -142,7 +144,7 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
                                 Log.d(TAG, "onSuccess: unknown date");
                             }
                         }
-                        saveToFile(fileName, listExpense);
+                        getUserCurrency(fileName, listExpense);
 
 
                     }
@@ -156,9 +158,30 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
     }
 
     /**
+     * Receiving user currency from database
+     */
+    private void getUserCurrency(final String fileName, final ArrayList<FinanceModel> listExpense){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(FirebaseReferences.USER.getReferences())
+                .document(FirebaseAuth.getInstance().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()){
+                            UserModel model = documentSnapshot.toObject(UserModel.class);
+                            String currency = model.getCurrency();
+                            saveToFile(fileName, listExpense, currency);
+                        }
+                    }
+                });
+    }
+
+    /**
      * Export date to CSV file
      */
-    private void saveToFile(String fileName, ArrayList<FinanceModel> listExpense) {
+    @SuppressLint("SimpleDateFormat")
+    private void saveToFile(String fileName, ArrayList<FinanceModel> listExpense, String currency) {
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -177,26 +200,35 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
                             File.separatorChar +
                             fileName + ".csv");
             FileWriter os;
+
             try {
                 os = new FileWriter(file);
 
                 /* Header */
-                CSVUtils.writeLine(os, Arrays.asList("Category", "Date", "Amount", "Note"));
+                CSVUtils.writeLine(os, Arrays.asList("Category", "Date", "Amount"));
 
                 for (FinanceModel model : listExpense) {
-                    CSVUtils.writeLine(os, Arrays.asList(model.getCategory(), model.getDate(), model.getAmount(), model.getNote()));
+                    Log.d(TAG, "saveToFile: date : " + model.getDate());
+
+                    Date date = new SimpleDateFormat("dd-MM-yyy").parse(model.getDate());
+                    CSVUtils.writeLine(os, Arrays.asList(model.getCategory(),
+                            new SimpleDateFormat("dd.MM.yyy").format(date),
+                            model.getAmount() + currency));
                 }
+
                 os.close();
                 dismiss();
 
                 Log.d(TAG, "onClick: file was saved");
-                Toast.makeText(getActivity(), "File was saved to Downloads", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.config_fileSaved, Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             } catch (IOException e) {
                 e.printStackTrace();
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), "Cannot save file. Try again later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.config_fileError, Toast.LENGTH_SHORT).show();
                 dismiss();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -269,10 +301,10 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
             try {
                 if (InternetStatus.getConnectivityStatus(getActivity())) {
                     getReportFromRange(sdf.parse(startDate), sdf.parse(endDate));
-                } else Toast.makeText(getActivity(), "No internet connection... Try again later", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getActivity(), R.string.config_noInternet, Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), "Dates is wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.config_wrongDate, Toast.LENGTH_SHORT).show();
             }
         }
         if (v == tvCancel) {
@@ -286,10 +318,10 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.e("value", "Permission Granted, Now you can use local drive .");
-                    Toast.makeText(getActivity(), "Permissions Granted. Now you can export data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.config_permissionGranted, Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e("value", "Permission Denied, You cannot use local drive .");
-                    Toast.makeText(getActivity(), "Permissions Denied. You cannot use local drive", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.config_permissionDenied, Toast.LENGTH_SHORT).show();
 
                 }
                 break;
